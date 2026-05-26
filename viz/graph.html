@@ -287,6 +287,61 @@
 
   #panel-error { font-size: 12px; color: #f06060; }
 
+  /* ---- WRITE CONTROLS ---- */
+  #create-note-btn {
+    display: none;   /* revealed by detectWriteServer() when /api/ping responds */
+    margin: 8px 10px 8px;
+    width: calc(100% - 20px);
+    padding: 6px 0;
+    background: rgba(122,127,255,0.1); border: 1px solid var(--accent);
+    color: var(--accent); border-radius: 4px;
+    cursor: pointer; font-size: 12px;
+  }
+  #create-note-btn:hover { background: rgba(122,127,255,0.2); }
+
+  #panel-top-row {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #edit-note-btn {
+    display: none;   /* shown when canEdit=true and a note is open */
+    background: rgba(122,127,255,0.1); border: 1px solid var(--accent);
+    color: var(--accent); font-size: 13px;
+    padding: 6px 16px; border-radius: 4px; cursor: pointer;
+  }
+  #edit-note-btn:hover { background: rgba(122,127,255,0.2); }
+
+  /* Write / edit form */
+  #write-view { display: flex; flex-direction: column; gap: 10px; }
+  #write-view.hidden { display: none; }
+  #read-view.hidden  { display: none; }
+
+  .form-field { display: flex; flex-direction: column; gap: 4px; }
+  .form-field label { font-size: 11px; color: var(--muted); }
+  .form-field input, .form-field textarea {
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); border-radius: 4px;
+    padding: 6px 8px; font-size: 12px; font-family: inherit;
+    resize: vertical;
+  }
+  .form-field input:focus, .form-field textarea:focus {
+    outline: none; border-color: var(--accent);
+  }
+  #create-fields.hidden { display: none; }
+  #form-actions { display: flex; gap: 8px; }
+  #save-btn {
+    flex: 1; padding: 6px 0;
+    background: var(--accent); border: none;
+    color: #fff; border-radius: 4px; cursor: pointer; font-size: 12px;
+  }
+  #save-btn:hover { opacity: 0.85; }
+  #cancel-btn {
+    padding: 6px 12px; background: none;
+    border: 1px solid var(--border); color: var(--muted);
+    border-radius: 4px; cursor: pointer; font-size: 12px;
+  }
+  #cancel-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #form-status { font-size: 11px; color: var(--muted); min-height: 16px; }
+
   /* ---- FILE:// WARNING ---- */
   #file-warning {
     position: absolute; bottom: 10px; left: 12px; z-index: 20;
@@ -328,6 +383,9 @@
     <div id="controls">
       <input id="search" type="search" placeholder="Search nodes…" autocomplete="off">
     </div>
+
+    <!-- Create Note button — hidden in read-only / demo mode -->
+    <button id="create-note-btn" title="Create a new note">+ New Note</button>
 
     <!-- Scrollable note list — populated by buildNoteList() -->
     <div id="note-list">
@@ -435,10 +493,40 @@
 
   <!-- ---- NOTE SIDE PANEL ---- -->
   <div id="side-panel" class="hidden">
-    <button id="panel-close" title="Close">×</button>
-    <div id="panel-meta"></div>
-    <div id="panel-body"></div>
-    <div id="panel-error"></div>
+    <div id="panel-top-row">
+      <button id="edit-note-btn" title="Edit this note">Edit</button>
+      <button id="panel-close" title="Close">×</button>
+    </div>
+    <!-- Read view: metadata + body -->
+    <div id="read-view">
+      <div id="panel-meta"></div>
+      <div id="panel-body"></div>
+      <div id="panel-error"></div>
+    </div>
+    <!-- Write view: edit / create form -->
+    <div id="write-view" class="hidden">
+      <form id="note-form">
+        <div id="create-fields" class="hidden">
+          <div class="form-field">
+            <label>Note ID</label>
+            <input id="form-id" type="text" placeholder="e.g. my-note-001" autocomplete="off">
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Tags (comma-separated)</label>
+          <input id="form-tags" type="text" placeholder="e.g. virtue, reason" autocomplete="off">
+        </div>
+        <div class="form-field">
+          <label>Body</label>
+          <textarea id="form-body" rows="14"></textarea>
+        </div>
+        <div id="form-actions">
+          <button type="submit" id="save-btn">Save</button>
+          <button type="button" id="cancel-btn">Cancel</button>
+        </div>
+        <div id="form-status"></div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -490,6 +578,12 @@ let currentLayout  = "circular"; // tracks active layout so reload can re-apply 
 let allData        = null;    // raw graph.json — kept so density filter can re-render without refetch
 let currentMinWeight = 1;     // minimum edge weight (shared terms) to display
 let linkMethod       = "tfidf"; // "tfidf" = pre-computed edges; "tags" = Jaccard on tag sets
+
+// ---- WRITE STATE ----
+let canEdit    = false;   // true when watch.py's /api/ping is reachable
+let writeMode  = false;   // true while the edit/create form is showing
+let createMode = false;   // true for create, false for edit
+let activeNoteD = null;   // node data object currently open in the side panel
 
 // ---- SVG SETUP ----
 const svg    = d3.select("#graph");
@@ -560,9 +654,10 @@ function startPoll() {
   }, 3000);
 }
 
-// Initial load + start polling
+// Initial load + start polling + detect write server
 loadGraph();
 startPoll();
+detectWriteServer();
 
 document.getElementById("reload-btn").addEventListener("click", () => loadGraph(true));
 
@@ -915,20 +1010,32 @@ const panelMeta = document.getElementById("panel-meta");
 const panelBody = document.getElementById("panel-body");
 const panelErr  = document.getElementById("panel-error");
 document.getElementById("panel-close").onclick = () => {
+  if (writeMode) exitWriteMode();
   closePanel();
   nodeSel?.classed("dimmed highlighted", false);
   linkSel?.classed("dimmed highlighted", false);
 };
 
 function closePanel() {
+  if (writeMode) exitWriteMode();
+  activeNoteD = null;
   panel.classList.add("hidden");
   document.querySelectorAll(".note-item").forEach(el => el.classList.remove("active"));
 }
 
 function showPanel(d) {
+  activeNoteD = d;
   panel.classList.remove("hidden");
   panelErr.textContent = "";
   panelBody.textContent = "Loading…";
+
+  // Show edit button only when write server is available
+  document.getElementById("edit-note-btn").style.display = canEdit ? "block" : "none";
+
+  // Ensure read view is visible
+  document.getElementById("read-view").classList.remove("hidden");
+  document.getElementById("write-view").classList.add("hidden");
+  writeMode = false;
 
   // Render frontmatter fields
   const tags = Array.isArray(d.tags) ? d.tags.join(", ") : (d.tags || "");
@@ -940,12 +1047,126 @@ function showPanel(d) {
     Tags: ${tags || "—"}
   `;
 
-  // Attempt to fetch the .md file for the note body
-  // Works on localhost; blocked by browser under file:// due to CORS.
-  const mdPath = `../notes/${d.id}`;
-  // Try both with and without extension glob — find the actual filename
   fetchNoteBody(d.id);
 }
+
+// ---- WRITE / EDIT FUNCTIONALITY ----
+// Progressive enhancement: write controls are invisible unless watch.py is running.
+// detectWriteServer pings /api/ping on load; 200 → canEdit = true.
+async function detectWriteServer() {
+  try {
+    const r = await fetch("/api/ping", { signal: AbortSignal.timeout(1000) });
+    if (r.ok) {
+      canEdit = true;
+      document.getElementById("create-note-btn").style.display = "block";
+    }
+  } catch (_) {
+    // File:// or static host — read-only mode
+  }
+}
+
+function enterEditMode() {
+  if (!canEdit || !activeNoteD) return;
+  createMode = false;
+  writeMode  = true;
+
+  fetch(`/api/note/${activeNoteD.id}`)
+    .then(r => r.json())
+    .then(data => {
+      // Strip frontmatter — only body goes in the textarea
+      const body = (data.content || "").replace(/^---\n[\s\S]*?\n---\n\n?/, "");
+      const tags = Array.isArray(activeNoteD.tags) ? activeNoteD.tags.join(", ") : "";
+      document.getElementById("form-tags").value   = tags;
+      document.getElementById("form-body").value   = body;
+      document.getElementById("create-fields").classList.add("hidden");
+      document.getElementById("form-status").textContent = "";
+      document.getElementById("read-view").classList.add("hidden");
+      document.getElementById("write-view").classList.remove("hidden");
+    })
+    .catch(err => {
+      panelErr.textContent = `Could not load note for editing: ${err.message}`;
+      writeMode = false;
+    });
+}
+
+function enterCreateMode() {
+  createMode = true;
+  writeMode  = true;
+  activeNoteD = null;
+
+  panel.classList.remove("hidden");
+  document.getElementById("edit-note-btn").style.display = "none";
+  document.getElementById("create-fields").classList.remove("hidden");
+  document.getElementById("form-id").value     = "";
+  document.getElementById("form-tags").value   = "";
+  document.getElementById("form-body").value   = "";
+  document.getElementById("form-status").textContent = "";
+  document.getElementById("read-view").classList.add("hidden");
+  document.getElementById("write-view").classList.remove("hidden");
+  document.getElementById("form-id").focus();
+}
+
+function exitWriteMode() {
+  writeMode = false;
+  document.getElementById("write-view").classList.add("hidden");
+  document.getElementById("read-view").classList.remove("hidden");
+  if (canEdit && activeNoteD) {
+    document.getElementById("edit-note-btn").style.display = "block";
+  }
+}
+
+async function saveNote(event) {
+  event.preventDefault();
+  const statusEl = document.getElementById("form-status");
+  statusEl.textContent = "Saving…";
+
+  const tagsRaw = document.getElementById("form-tags").value;
+  const tags    = tagsRaw.split(",").map(t => t.trim()).filter(Boolean);
+  const body    = document.getElementById("form-body").value;
+
+  if (createMode) {
+    const noteId = document.getElementById("form-id").value.trim();
+    if (!noteId) { statusEl.textContent = "Note ID is required."; return; }
+    try {
+      const r    = await fetch("/api/note", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: noteId, tags, body }),
+      });
+      const data = await r.json();
+      if (!r.ok) { statusEl.textContent = `Error: ${data.error}`; return; }
+      statusEl.textContent = "Created! Graph will rebuild shortly.";
+      // File watcher handles rebuild; close panel after a moment
+      setTimeout(() => { exitWriteMode(); closePanel(); }, 1800);
+    } catch (err) {
+      statusEl.textContent = `Save failed: ${err.message}`;
+    }
+  } else {
+    try {
+      const r    = await fetch(`/api/note/${activeNoteD.id}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tags, body }),
+      });
+      const data = await r.json();
+      if (!r.ok) { statusEl.textContent = `Error: ${data.error}`; return; }
+      statusEl.textContent = "Saved! Graph will rebuild shortly.";
+      // Update the live panel without waiting for graph reload
+      setTimeout(() => {
+        exitWriteMode();
+        panelBody.textContent = body;
+        panelMeta.innerHTML = panelMeta.innerHTML.replace(
+          /Tags: .*/, `Tags: ${tags.join(", ") || "—"}`
+        );
+      }, 800);
+    } catch (err) {
+      statusEl.textContent = `Save failed: ${err.message}`;
+    }
+  }
+}
+
+document.getElementById("edit-note-btn").addEventListener("click", enterEditMode);
+document.getElementById("create-note-btn").addEventListener("click", enterCreateMode);
+document.getElementById("cancel-btn").addEventListener("click", exitWriteMode);
+document.getElementById("note-form").addEventListener("submit", saveNote);
 
 function fetchNoteBody(noteId) {
   // The filename has a slug appended: we can't know it without listing the dir.
