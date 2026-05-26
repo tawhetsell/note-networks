@@ -7,9 +7,7 @@
       "degree": 0,
       "speaker": "BOOK_I",
       "tags": [
-        "mind",
-        "virtue",
-        "society"
+        "self-discipline"
       ],
       "source": "Meditations I.4"
     },
@@ -20,13 +18,8 @@
       "degree": 19,
       "speaker": "BOOK_I",
       "tags": [
-        "mind",
         "virtue",
-        "present",
-        "body",
-        "providence",
-        "society",
-        "passion"
+        "equanimity"
       ],
       "source": "Meditations I.13"
     },
@@ -37,15 +30,10 @@
       "degree": 14,
       "speaker": "BOOK_I",
       "tags": [
-        "death",
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "body",
-        "providence",
-        "society",
-        "passion"
+        "acceptance",
+        "cosmos",
+        "reason",
+        "duty"
       ],
       "source": "Meditations I.14"
     },
@@ -56,13 +44,9 @@
       "degree": 9,
       "speaker": "BOOK_I",
       "tags": [
-        "nature",
-        "virtue",
         "reason",
-        "present",
-        "body",
-        "providence",
-        "society"
+        "community",
+        "duty"
       ],
       "source": "Meditations I.15"
     },
@@ -73,11 +57,9 @@
       "degree": 8,
       "speaker": "BOOK_I",
       "tags": [
-        "death",
-        "nature",
-        "virtue",
-        "providence",
-        "society"
+        "cosmos",
+        "impermanence",
+        "time"
       ],
       "source": "Meditations I.17"
     },
@@ -89,7 +71,7 @@
       "speaker": "BOOK_II",
       "tags": [
         "reason",
-        "passion"
+        "self-discipline"
       ],
       "source": "Meditations II.7"
     },
@@ -101,13 +83,7 @@
       "speaker": "BOOK_II",
       "tags": [
         "death",
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "providence",
-        "society",
-        "passion"
+        "equanimity"
       ],
       "source": "Meditations II.8"
     },
@@ -118,11 +94,9 @@
       "degree": 6,
       "speaker": "BOOK_II",
       "tags": [
-        "mind",
+        "reason",
         "virtue",
-        "providence",
-        "society",
-        "passion"
+        "self-discipline"
       ],
       "source": "Meditations II.11"
     },
@@ -133,10 +107,8 @@
       "degree": 14,
       "speaker": "BOOK_II",
       "tags": [
-        "death",
-        "nature",
-        "present",
-        "society"
+        "impermanence",
+        "present-moment"
       ],
       "source": "Meditations II.12"
     },
@@ -147,11 +119,11 @@
       "degree": 2,
       "speaker": "BOOK_II",
       "tags": [
-        "mind",
-        "nature",
         "reason",
-        "society",
-        "passion"
+        "cosmos",
+        "impermanence",
+        "acceptance",
+        "present-moment"
       ],
       "source": "Meditations II.14"
     },
@@ -162,11 +134,8 @@
       "degree": 10,
       "speaker": "BOOK_II",
       "tags": [
-        "death",
-        "mind",
-        "nature",
-        "body",
-        "society"
+        "impermanence",
+        "philosophy"
       ],
       "source": "Meditations II.15"
     },
@@ -178,12 +147,7 @@
       "speaker": "BOOK_III",
       "tags": [
         "death",
-        "mind",
-        "nature",
-        "reason",
-        "present",
-        "providence",
-        "society"
+        "reason"
       ],
       "source": "Meditations III.1"
     },
@@ -194,10 +158,8 @@
       "degree": 7,
       "speaker": "BOOK_III",
       "tags": [
-        "mind",
-        "nature",
-        "society",
-        "passion"
+        "perception",
+        "present-moment"
       ],
       "source": "Meditations III.2"
     },
@@ -208,13 +170,8 @@
       "degree": 13,
       "speaker": "BOOK_III",
       "tags": [
-        "nature",
         "virtue",
-        "reason",
-        "present",
-        "providence",
-        "society",
-        "passion"
+        "community"
       ],
       "source": "Meditations III.4"
     },
@@ -225,14 +182,8 @@
       "degree": 18,
       "speaker": "BOOK_III",
       "tags": [
-        "death",
-        "mind",
-        "nature",
         "virtue",
-        "reason",
-        "present",
-        "providence",
-        "society"
+        "reason"
       ],
       "source": "Meditations III.7"
     },
@@ -243,14 +194,9 @@
       "degree": 7,
       "speaker": "BOOK_III",
       "tags": [
-        "death",
-        "mind",
-        "nature",
-        "virtue",
-        "reason",
-        "present",
-        "providence",
-        "society"
+        "impermanence",
+        "acceptance",
+        "time"
       ],
       "source": "Meditations III.10"
     },
@@ -261,11 +207,8 @@
       "degree": 0,
       "speaker": "BOOK_III",
       "tags": [
-        "mind",
         "virtue",
-        "reason",
-        "providence",
-        "society"
+        "reason"
       ],
       "source": "Meditations III.17"
     },
@@ -276,16 +219,10 @@
       "degree": 28,
       "speaker": "BOOK_IV",
       "tags": [
-        "death",
-        "mind",
-        "nature",
-        "virtue",
-        "reason",
-        "present",
-        "body",
-        "providence",
-        "society",
-        "passion"
+        "acceptance",
+        "equanimity",
+        "cosmos",
+        "death"
       ],
       "source": "Meditations IV.3"
     },
@@ -296,11 +233,7 @@
       "degree": 9,
       "speaker": "BOOK_IV",
       "tags": [
-        "death",
-        "nature",
-        "virtue",
-        "present",
-        "society"
+        "fame"
       ],
       "source": "Meditations IV.16"
     },
@@ -312,10 +245,7 @@
       "speaker": "BOOK_IV",
       "tags": [
         "death",
-        "reason",
-        "present",
-        "body",
-        "society"
+        "reason"
       ],
       "source": "Meditations IV.17"
     },
@@ -326,10 +256,9 @@
       "degree": 9,
       "speaker": "BOOK_IV",
       "tags": [
-        "death",
-        "mind",
-        "present",
-        "society"
+        "impermanence",
+        "acceptance",
+        "death"
       ],
       "source": "Meditations IV.27"
     },
@@ -340,11 +269,8 @@
       "degree": 4,
       "speaker": "BOOK_IV",
       "tags": [
-        "nature",
-        "reason",
-        "present",
-        "society",
-        "passion"
+        "impermanence",
+        "reason"
       ],
       "source": "Meditations IV.28"
     },
@@ -355,10 +281,7 @@
       "degree": 7,
       "speaker": "BOOK_IV",
       "tags": [
-        "death",
-        "nature",
-        "present",
-        "society"
+        "death"
       ],
       "source": "Meditations IV.39"
     },
@@ -369,10 +292,8 @@
       "degree": 7,
       "speaker": "BOOK_IV",
       "tags": [
-        "nature",
-        "present",
-        "society",
-        "passion"
+        "acceptance",
+        "perception"
       ],
       "source": "Meditations IV.41"
     },
@@ -383,11 +304,8 @@
       "degree": 12,
       "speaker": "BOOK_V",
       "tags": [
-        "nature",
-        "virtue",
-        "present",
-        "society",
-        "passion"
+        "duty",
+        "virtue"
       ],
       "source": "Meditations V.1"
     },
@@ -398,12 +316,8 @@
       "degree": 11,
       "speaker": "BOOK_V",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
-        "reason",
-        "society",
-        "passion"
+        "community"
       ],
       "source": "Meditations V.6"
     },
@@ -414,12 +328,9 @@
       "degree": 19,
       "speaker": "BOOK_V",
       "tags": [
-        "nature",
-        "virtue",
-        "present",
-        "body",
-        "providence",
-        "society"
+        "acceptance",
+        "cosmos",
+        "reason"
       ],
       "source": "Meditations V.8"
     },
@@ -430,12 +341,9 @@
       "degree": 13,
       "speaker": "BOOK_V",
       "tags": [
-        "nature",
-        "virtue",
         "reason",
-        "present",
-        "society",
-        "passion"
+        "self-discipline",
+        "duty"
       ],
       "source": "Meditations V.9"
     },
@@ -446,11 +354,8 @@
       "degree": 1,
       "speaker": "BOOK_V",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
         "reason",
-        "society"
+        "virtue"
       ],
       "source": "Meditations V.14"
     },
@@ -461,10 +366,9 @@
       "degree": 18,
       "speaker": "BOOK_V",
       "tags": [
-        "mind",
-        "nature",
-        "present",
-        "society"
+        "impermanence",
+        "acceptance",
+        "present-moment"
       ],
       "source": "Meditations V.19"
     },
@@ -475,11 +379,8 @@
       "degree": 6,
       "speaker": "BOOK_VI",
       "tags": [
-        "mind",
-        "nature",
-        "present",
-        "body",
-        "society"
+        "perception",
+        "body"
       ],
       "source": "Meditations VI.11"
     },
@@ -490,10 +391,7 @@
       "degree": 3,
       "speaker": "BOOK_VI",
       "tags": [
-        "nature",
-        "present",
-        "body",
-        "society"
+        "impermanence"
       ],
       "source": "Meditations VI.14"
     },
@@ -504,12 +402,8 @@
       "degree": 6,
       "speaker": "BOOK_VI",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
-        "present",
-        "providence",
-        "society"
+        "reason"
       ],
       "source": "Meditations VI.15"
     },
@@ -520,11 +414,8 @@
       "degree": 7,
       "speaker": "BOOK_VI",
       "tags": [
-        "nature",
         "virtue",
-        "reason",
-        "present",
-        "society"
+        "self-discipline"
       ],
       "source": "Meditations VI.28"
     },
@@ -535,10 +426,9 @@
       "degree": 3,
       "speaker": "BOOK_VI",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
-        "present"
+        "cosmos",
+        "impermanence",
+        "time"
       ],
       "source": "Meditations VI.33"
     },
@@ -549,12 +439,10 @@
       "degree": 10,
       "speaker": "BOOK_VI",
       "tags": [
-        "nature",
         "virtue",
-        "reason",
-        "present",
-        "providence",
-        "society"
+        "community",
+        "duty",
+        "reason"
       ],
       "source": "Meditations VI.39"
     },
@@ -566,9 +454,8 @@
       "speaker": "BOOK_VI",
       "tags": [
         "death",
-        "nature",
-        "present",
-        "society"
+        "virtue",
+        "acceptance"
       ],
       "source": "Meditations VI.42"
     },
@@ -579,11 +466,8 @@
       "degree": 12,
       "speaker": "BOOK_VII",
       "tags": [
-        "death",
-        "nature",
-        "virtue",
-        "reason",
-        "present"
+        "duty",
+        "virtue"
       ],
       "source": "Meditations VII.5"
     },
@@ -594,10 +478,8 @@
       "degree": 19,
       "speaker": "BOOK_VII",
       "tags": [
-        "mind",
-        "nature",
-        "reason",
-        "society"
+        "impermanence",
+        "reason"
       ],
       "source": "Meditations VII.16"
     },
@@ -609,12 +491,7 @@
       "speaker": "BOOK_VII",
       "tags": [
         "death",
-        "mind",
-        "nature",
-        "virtue",
-        "providence",
-        "society",
-        "passion"
+        "cosmos"
       ],
       "source": "Meditations VII.26"
     },
@@ -625,12 +502,8 @@
       "degree": 12,
       "speaker": "BOOK_VII",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "body",
-        "society"
+        "reason",
+        "virtue"
       ],
       "source": "Meditations VII.30"
     },
@@ -641,13 +514,9 @@
       "degree": 9,
       "speaker": "BOOK_VII",
       "tags": [
-        "death",
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "society",
-        "passion"
+        "acceptance",
+        "present-moment",
+        "equanimity"
       ],
       "source": "Meditations VII.31"
     },
@@ -658,12 +527,9 @@
       "degree": 4,
       "speaker": "BOOK_VII",
       "tags": [
-        "mind",
-        "nature",
-        "body",
-        "providence",
-        "society",
-        "passion"
+        "virtue",
+        "reason",
+        "duty"
       ],
       "source": "Meditations VII.37"
     },
@@ -674,13 +540,7 @@
       "degree": 6,
       "speaker": "BOOK_VII",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "body",
-        "providence",
-        "society"
+        "equanimity"
       ],
       "source": "Meditations VII.39"
     },
@@ -691,12 +551,10 @@
       "degree": 11,
       "speaker": "BOOK_VIII",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
-        "present",
-        "society",
-        "passion"
+        "philosophy",
+        "reason",
+        "self-discipline"
       ],
       "source": "Meditations VIII.1"
     },
@@ -707,9 +565,8 @@
       "degree": 11,
       "speaker": "BOOK_VIII",
       "tags": [
-        "nature",
         "virtue",
-        "society"
+        "reason"
       ],
       "source": "Meditations VIII.6"
     },
@@ -720,12 +577,8 @@
       "degree": 14,
       "speaker": "BOOK_VIII",
       "tags": [
-        "death",
-        "nature",
-        "reason",
-        "body",
-        "society",
-        "passion"
+        "fame",
+        "death"
       ],
       "source": "Meditations VIII.19"
     },
@@ -736,11 +589,9 @@
       "degree": 15,
       "speaker": "BOOK_VIII",
       "tags": [
-        "nature",
-        "present",
-        "body",
-        "providence",
-        "society"
+        "community",
+        "acceptance",
+        "duty"
       ],
       "source": "Meditations VIII.32"
     },
@@ -751,12 +602,9 @@
       "degree": 12,
       "speaker": "BOOK_VIII",
       "tags": [
-        "mind",
-        "nature",
         "reason",
-        "present",
-        "society",
-        "passion"
+        "perception",
+        "self-discipline"
       ],
       "source": "Meditations VIII.39"
     },
@@ -767,12 +615,9 @@
       "degree": 18,
       "speaker": "BOOK_VIII",
       "tags": [
-        "death",
-        "mind",
-        "nature",
+        "acceptance",
         "virtue",
-        "society",
-        "passion"
+        "equanimity"
       ],
       "source": "Meditations VIII.45"
     },
@@ -783,8 +628,10 @@
       "degree": 9,
       "speaker": "BOOK_VIII",
       "tags": [
-        "nature",
-        "society"
+        "cosmos",
+        "impermanence",
+        "time",
+        "death"
       ],
       "source": "Meditations VIII.48"
     },
@@ -795,15 +642,11 @@
       "degree": 11,
       "speaker": "BOOK_IX",
       "tags": [
-        "death",
-        "mind",
-        "nature",
         "virtue",
         "reason",
-        "present",
-        "body",
-        "providence",
-        "passion"
+        "duty",
+        "community",
+        "acceptance"
       ],
       "source": "Meditations IX.1"
     },
@@ -815,11 +658,8 @@
       "speaker": "BOOK_IX",
       "tags": [
         "death",
-        "mind",
-        "nature",
-        "present",
-        "society",
-        "passion"
+        "acceptance",
+        "impermanence"
       ],
       "source": "Meditations IX.3"
     },
@@ -830,12 +670,9 @@
       "degree": 22,
       "speaker": "BOOK_IX",
       "tags": [
-        "mind",
-        "nature",
+        "community",
         "reason",
-        "present",
-        "society",
-        "passion"
+        "duty"
       ],
       "source": "Meditations IX.7"
     },
@@ -846,12 +683,9 @@
       "degree": 12,
       "speaker": "BOOK_IX",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "providence",
-        "society"
+        "impermanence",
+        "duty",
+        "time"
       ],
       "source": "Meditations IX.29"
     },
@@ -862,9 +696,7 @@
       "degree": 20,
       "speaker": "BOOK_IX",
       "tags": [
-        "mind",
-        "providence",
-        "passion"
+        "equanimity"
       ],
       "source": "Meditations IX.40"
     },
@@ -875,12 +707,9 @@
       "degree": 19,
       "speaker": "BOOK_IX",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
-        "reason",
-        "society",
-        "passion"
+        "anger",
+        "community"
       ],
       "source": "Meditations IX.43"
     },
@@ -891,10 +720,9 @@
       "degree": 16,
       "speaker": "BOOK_X",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
-        "society"
+        "community",
+        "duty"
       ],
       "source": "Meditations X.6"
     },
@@ -905,9 +733,9 @@
       "degree": 16,
       "speaker": "BOOK_X",
       "tags": [
-        "nature",
+        "impermanence",
         "reason",
-        "present"
+        "time"
       ],
       "source": "Meditations X.7"
     },
@@ -918,15 +746,9 @@
       "degree": 21,
       "speaker": "BOOK_X",
       "tags": [
-        "death",
-        "mind",
-        "nature",
         "virtue",
-        "present",
-        "body",
-        "providence",
-        "society",
-        "passion"
+        "present-moment",
+        "reason"
       ],
       "source": "Meditations X.8"
     },
@@ -937,14 +759,11 @@
       "degree": 21,
       "speaker": "BOOK_X",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
         "reason",
-        "present",
-        "body",
-        "society",
-        "passion"
+        "duty",
+        "community",
+        "self-discipline"
       ],
       "source": "Meditations X.33"
     },
@@ -955,11 +774,9 @@
       "degree": 3,
       "speaker": "BOOK_X",
       "tags": [
-        "death",
-        "nature",
-        "virtue",
-        "society",
-        "passion"
+        "impermanence",
+        "fame",
+        "time"
       ],
       "source": "Meditations X.34"
     },
@@ -970,13 +787,9 @@
       "degree": 15,
       "speaker": "BOOK_X",
       "tags": [
+        "acceptance",
         "death",
-        "mind",
-        "nature",
-        "virtue",
-        "present",
-        "society",
-        "passion"
+        "equanimity"
       ],
       "source": "Meditations X.36"
     },
@@ -987,10 +800,10 @@
       "degree": 12,
       "speaker": "BOOK_XI",
       "tags": [
-        "mind",
-        "nature",
         "reason",
-        "society"
+        "virtue",
+        "perception",
+        "community"
       ],
       "source": "Meditations XI.1"
     },
@@ -1001,13 +814,10 @@
       "degree": 12,
       "speaker": "BOOK_XI",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
+        "perception",
+        "acceptance",
         "reason",
-        "providence",
-        "society",
-        "passion"
+        "equanimity"
       ],
       "source": "Meditations XI.5"
     },
@@ -1018,11 +828,10 @@
       "degree": 11,
       "speaker": "BOOK_XI",
       "tags": [
-        "mind",
-        "nature",
+        "equanimity",
         "virtue",
-        "present",
-        "society"
+        "reason",
+        "acceptance"
       ],
       "source": "Meditations XI.15"
     },
@@ -1033,13 +842,7 @@
       "degree": 19,
       "speaker": "BOOK_XI",
       "tags": [
-        "mind",
-        "nature",
-        "virtue",
-        "reason",
-        "present",
-        "society",
-        "passion"
+        "anger"
       ],
       "source": "Meditations XI.16"
     },
@@ -1050,11 +853,10 @@
       "degree": 10,
       "speaker": "BOOK_XI",
       "tags": [
-        "mind",
-        "nature",
-        "body",
-        "providence",
-        "passion"
+        "acceptance",
+        "duty",
+        "community",
+        "equanimity"
       ],
       "source": "Meditations XI.18"
     },
@@ -1066,7 +868,9 @@
       "speaker": "BOOK_XI",
       "tags": [
         "reason",
-        "present"
+        "self-discipline",
+        "virtue",
+        "philosophy"
       ],
       "source": "Meditations XI.31"
     },
@@ -1077,14 +881,10 @@
       "degree": 18,
       "speaker": "BOOK_XII",
       "tags": [
-        "mind",
-        "nature",
         "virtue",
-        "present",
-        "body",
-        "providence",
-        "society",
-        "passion"
+        "present-moment",
+        "reason",
+        "death"
       ],
       "source": "Meditations XII.1"
     },
@@ -1095,13 +895,9 @@
       "degree": 19,
       "speaker": "BOOK_XII",
       "tags": [
-        "mind",
-        "virtue",
         "reason",
-        "present",
-        "body",
-        "providence",
-        "society"
+        "present-moment",
+        "philosophy"
       ],
       "source": "Meditations XII.2"
     },
@@ -1113,12 +909,9 @@
       "speaker": "BOOK_XII",
       "tags": [
         "death",
-        "nature",
         "virtue",
-        "reason",
-        "present",
-        "providence",
-        "society"
+        "acceptance",
+        "reason"
       ],
       "source": "Meditations XII.4"
     },
@@ -1130,14 +923,10 @@
       "speaker": "BOOK_XII",
       "tags": [
         "death",
-        "mind",
-        "nature",
-        "virtue",
-        "reason",
-        "present",
-        "body",
-        "providence",
-        "society"
+        "acceptance",
+        "impermanence",
+        "time",
+        "equanimity"
       ],
       "source": "Meditations XII.17"
     },
@@ -1148,12 +937,7 @@
       "degree": 19,
       "speaker": "BOOK_XII",
       "tags": [
-        "death",
-        "nature",
-        "virtue",
-        "present",
-        "society",
-        "passion"
+        "death"
       ],
       "source": "Meditations XII.27"
     }

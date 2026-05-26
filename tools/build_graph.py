@@ -12,9 +12,12 @@ Refactored from note-networks.py:
   - No inline HTML generation — viz/graph.html is authored separately
   - Configurable constants at top of file
 
-Usage: python tools/build_graph.py
+Usage:
+  python tools/build_graph.py              # TF-IDF (default)
+  python tools/build_graph.py --method bm25  # BM25 (better term-freq saturation)
 """
 
+import argparse
 import csv
 import json
 import re
@@ -133,7 +136,7 @@ def tokens(text: str) -> list[str]:
 
 # ---- BUILD ----
 
-def build():
+def build(method: str = "tfidf"):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Collect files (rglob = recursive glob across all subdirectories)
@@ -157,16 +160,29 @@ def build():
     for toks in docs.values():
         df.update(set(toks))
 
-    # TF-IDF: down-weight ubiquitous words, surface distinctive ones.
-    # tfidf(tf, term) = term_freq * log(N / (1 + doc_freq))
-    def tfidf(tf: int, term: str) -> float:
+    # Scoring: TF-IDF or BM25.
+    # BM25 adds term-frequency saturation (k1) and document-length normalisation (b),
+    # preventing long notes from dominating just because a term appears many times.
+    # k1=1.5, b=0.75 are standard defaults from the Okapi BM25 paper.
+    doc_lens   = {name: len(toks) for name, toks in docs.items()}
+    avg_doc_len = sum(doc_lens.values()) / len(doc_lens) if doc_lens else 1
+
+    def score_term(tf: int, term: str, doc_len: int) -> float:
+        if method == "bm25":
+            k1, b = 1.5, 0.75
+            # BM25 IDF (Robertson–Spärck Jones variant, stays positive)
+            idf = log((N - df[term] + 0.5) / (df[term] + 0.5) + 1)
+            # Saturated TF with length normalisation
+            tf_norm = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * doc_len / avg_doc_len))
+            return idf * tf_norm
+        # Default: classic TF-IDF
         return tf * log(N / (1 + df[term]))
 
     # Top-K distinctive terms per note
     distinctive: dict[str, set[str]] = {}
     for name, toks in docs.items():
         tf     = Counter(toks)
-        ranked = sorted(tf.items(), key=lambda x: -tfidf(x[1], x[0]))
+        ranked = sorted(tf.items(), key=lambda x: -score_term(x[1], x[0], doc_lens[name]))
         distinctive[name] = {t for t, _ in ranked[:TOP_K]}
 
     # Edges: pairs sharing MIN_SHARED+ distinctive terms
@@ -221,7 +237,7 @@ def build():
             ]
             w.writerow(row)
 
-    print(f"Built graph: {len(nodes)} nodes, {len(edges)} edges")
+    print(f"Built graph [{method}]: {len(nodes)} nodes, {len(edges)} edges")
     print(f"  -> {json_out}")
     print(f"  -> {csv_out}")
     # Speaker distribution
@@ -231,4 +247,10 @@ def build():
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser(description="Build note graph from notes/")
+    parser.add_argument(
+        "--method", choices=["tfidf", "bm25"], default="tfidf",
+        help="Link scoring algorithm (default: tfidf)",
+    )
+    args = parser.parse_args()
+    build(args.method)

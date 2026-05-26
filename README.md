@@ -1,6 +1,6 @@
 # Note Networks — Portable Zettelkasten with Live Semantic Graph
 
-Turn a folder of markdown notes into an interactive, self-updating knowledge graph — with no cloud services, no embeddings, and no internet connection required after setup.
+Turn a folder of markdown notes into an interactive, self-updating knowledge graph — with no cloud services, no internet connection required after setup.
 
 ---
 
@@ -8,7 +8,7 @@ Turn a folder of markdown notes into an interactive, self-updating knowledge gra
 
 You have a body of text you want to think with: research notes, book excerpts, meeting summaries, a reading journal. You want to see the structure — which ideas cluster, which are hubs everything passes through, which sit isolated at the edges.
 
-Note Networks does that. You write short atomic notes, one idea per file. The tool reads them, scores each note's vocabulary with TF-IDF to surface its most distinctive terms, then draws edges between notes that share those terms. The result is a navigable map of your corpus.
+Note Networks does that. You write short atomic notes, one idea per file. The tool reads them, builds connections between notes based on shared vocabulary or shared tags, and draws the result as a navigable graph.
 
 The graph updates live as you write. Open a note in your editor, save, and the browser re-renders within a few seconds — no manual rebuild, no page refresh.
 
@@ -16,12 +16,13 @@ The graph updates live as you write. Open a note in your editor, save, and the b
 
 ## What you get
 
-- **Semantic co-occurrence graph** built from your actual text, not hand-coded links
+- **Two link methods** — TF-IDF vocabulary co-occurrence (algorithmic, from text) or tag-based Jaccard (from your own annotations); switch between them in the viewer
 - **Live reload** — file watcher + HEAD poll, updates in ~3 seconds
-- **Interactive viewer**: pan, zoom, click a node to read it, hover an edge to see the shared terms that connected two notes
+- **Interactive viewer**: pan, zoom, click a node to read it, hover an edge to see shared terms or tags
 - **12 layout algorithms** — Force (FR), Force Atlas, Kamada-Kawai, spectral, circular, concentric, and more
-- **Edge density filter** — collapse the graph from all edges down to only the strongest connections (≥2, ≥3, ≥4 shared terms) with a single click
+- **Edge density filter** — collapse the graph from all edges down to only the strongest connections with a single click
 - **Gephi-aligned physics controls** — Repulsion and Gravity sliders that match the parameters Gephi users already know
+- **Scrollable note list** with sort by title, chronology, or degree centrality
 - **Fully local** — no account, no API key, no data leaves your machine
 
 ---
@@ -82,11 +83,22 @@ viz/graph.html
     ├─ d3 v7 force simulation (Fruchterman–Reingold + Force Atlas)
     ├─ Node size = degree centrality
     ├─ Click node  → side panel with full note body
-    ├─ Hover edge  → tooltip showing shared terms
+    ├─ Hover edge  → tooltip showing shared terms or tags
+    ├─ Links toggle → switch between TF-IDF and tag-based edges live
     └─ HEAD poll every 3 s → auto-reload on graph change
 ```
 
-TF-IDF down-weights words that appear across many notes and surfaces terms distinctive to a small number. An edge forms only when a term ranks in the top-25 for *both* notes — this cuts noise from common words that slip past the stopword list.
+**TF-IDF** down-weights words that appear across many notes and surfaces terms distinctive to a small number. An edge forms only when a term ranks in the top-25 for *both* notes — this cuts noise from common words that slip past the stopword list.
+
+**Tag-based edges** connect notes that share tags you annotated yourself. Edge weight equals the number of shared tags, so the density filter lets you show only notes with two or more tags in common — a sparser, more intentional view of your corpus.
+
+### BM25 variant
+
+For corpora where note length varies significantly, BM25 scoring gives better results than plain TF-IDF by saturating term frequency and normalising for document length:
+
+```bash
+python tools/build_graph.py --method bm25
+```
 
 ---
 
@@ -96,7 +108,7 @@ TF-IDF down-weights words that appear across many notes and surfaces terms disti
 note-networks/
 ├── notes/                    ← your atomic notes (Markdown)
 ├── tools/
-│   ├── build_graph.py        ← notes/ → data/graph.json
+│   ├── build_graph.py        ← notes/ → data/graph.json  (--method tfidf|bm25)
 │   ├── seed_from_aurelius.py ← generates the demo corpus
 │   └── watch.py              ← file watcher + HTTP server on port 8765
 ├── viz/
@@ -124,7 +136,7 @@ No Node.js, no build step, no database. `d3.js` loads from CDN on first open; su
 
 ## Demo corpus
 
-The repo ships with 74 passages from Marcus Aurelius's *Meditations* (Casaubon translation, Project Gutenberg). Run `python tools/seed_from_aurelius.py` to write them to `notes/`, then `build_graph.py` to render the graph.
+The repo ships with 74 passages from Marcus Aurelius's *Meditations* (Casaubon translation, Project Gutenberg), annotated with Stoic theme tags. Run `python tools/seed_from_aurelius.py` to write them to `notes/`, then `python tools/build_graph.py` to render the graph. The TF-IDF and Tags link methods produce visually distinct graphs of the same corpus — a useful illustration of how the two approaches differ.
 
 ---
 
@@ -132,9 +144,9 @@ The repo ships with 74 passages from Marcus Aurelius's *Meditations* (Casaubon t
 
 | Version | Feature |
 |---|---|
-| V1 (current) | TF-IDF co-occurrence, 12 layout algorithms, live reload |
-| V2 | Sentence-transformer embeddings for semantic similarity |
-| V3 | Named-entity extraction (spaCy) for person / place / concept nodes |
+| V1 (current) | TF-IDF and tag-based links, 12 layout algorithms, live reload |
+| V2 | Named-entity extraction (spaCy) for person / place / concept nodes |
+| V3 | Sentence-transformer embeddings for semantic similarity |
 
 ---
 
@@ -146,4 +158,4 @@ Layout algorithms and physics parameter conventions are modelled on [Gephi](http
 
 ## Built with Claude Code
 
-This application was built with [Claude Code](https://claude.ai/code) — Anthropic's agentic coding tool — running the **Claude Opus 4.7** model inside the VS Code extension. The graph layout algorithms, TF-IDF pipeline, live-reload watcher, and interactive viewer were all designed and implemented through a single iterative conversation with the agent.
+This application was built with [Claude Code](https://claude.ai/code) running inside the VS Code extension. The graph layout algorithms, TF-IDF pipeline, live-reload watcher, and interactive viewer were all designed and implemented through an iterative conversation with the agent.

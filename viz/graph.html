@@ -139,6 +139,30 @@
   #reload-btn.spinning { animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ---- LINK METHOD ---- */
+  #link-method-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  #link-method-row > label {
+    font-size: 12px; color: var(--muted); white-space: nowrap;
+  }
+  #link-method-btns {
+    display: flex; flex: 1;
+  }
+  .link-method-btn {
+    flex: 1; padding: 4px 0;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer; font-size: 11px;
+    margin-left: -1px; transition: border-color 0.15s, color 0.15s;
+  }
+  .link-method-btn:first-child { border-radius: 4px 0 0 4px; margin-left: 0; }
+  .link-method-btn:last-child  { border-radius: 0 4px 4px 0; }
+  .link-method-btn:hover { border-color: var(--accent); color: var(--accent); position: relative; z-index: 1; }
+  .link-method-btn.active {
+    border-color: var(--accent); color: var(--accent);
+    background: rgba(122,127,255,0.12); position: relative; z-index: 1;
+  }
+
   /* ---- DENSITY FILTER ---- */
   #density-row {
     display: flex; align-items: center; gap: 8px;
@@ -364,6 +388,15 @@
         <button id="reset-btn">Reset defaults</button>
       </details>
 
+      <!-- Link generation method -->
+      <div id="link-method-row">
+        <label>Links</label>
+        <div id="link-method-btns">
+          <button class="link-method-btn active" data-method="tfidf">TF-IDF</button>
+          <button class="link-method-btn" data-method="tags">Tags</button>
+        </div>
+      </div>
+
       <!-- Edge density filter -->
       <div id="density-row">
         <label>Density</label>
@@ -456,6 +489,7 @@ let currentLinks   = [];      // edge objects with resolved source/target; neede
 let currentLayout  = "circular"; // tracks active layout so reload can re-apply it
 let allData        = null;    // raw graph.json — kept so density filter can re-render without refetch
 let currentMinWeight = 1;     // minimum edge weight (shared terms) to display
+let linkMethod       = "tfidf"; // "tfidf" = pre-computed edges; "tags" = Jaccard on tag sets
 
 // ---- SVG SETUP ----
 const svg    = d3.select("#graph");
@@ -532,13 +566,43 @@ startPoll();
 
 document.getElementById("reload-btn").addEventListener("click", () => loadGraph(true));
 
+// ---- LINK METHOD: TAGS (Jaccard) ----
+// Computes edges client-side from node tag sets. Edge weight = number of shared tags;
+// edges with weight >= currentMinWeight are shown (same density filter applies).
+// Jaccard = |A ∩ B| / |A ∪ B|; we use raw intersection count as weight so the
+// existing density buttons (≥1, ≥2 …) work the same way as for TF-IDF.
+function computeTagEdges(nodes) {
+  const edges = [];
+  for (let i = 0; i < nodes.length; i++) {
+    const tagsA = nodes[i].tags || [];
+    if (!tagsA.length) continue;
+    const setA = new Set(tagsA);
+    for (let j = i + 1; j < nodes.length; j++) {
+      const tagsB = nodes[j].tags || [];
+      const shared = tagsB.filter(t => setA.has(t));
+      if (shared.length > 0) {
+        edges.push({
+          from:   nodes[i].id,
+          to:     nodes[j].id,
+          weight: shared.length,
+          terms:  shared.sort(),   // reuses edge tooltip (shows shared tag names)
+        });
+      }
+    }
+  }
+  return edges;
+}
+
 // ---- DENSITY FILTER ----
 // Re-renders using the cached allData, filtering edges to weight >= currentMinWeight.
 // Recomputes degree centrality on the filtered edge set so node sizes stay accurate.
 function renderWithDensity(savedPos = {}) {
   if (!allData) return;
 
-  const filteredEdges = allData.edges.filter(e => e.weight >= currentMinWeight);
+  const baseEdges = linkMethod === "tags"
+    ? computeTagEdges(allData.nodes)
+    : allData.edges;
+  const filteredEdges = baseEdges.filter(e => e.weight >= currentMinWeight);
 
   // Recount degree from filtered edges (original degrees are for the full set)
   const degree = {};
@@ -566,13 +630,26 @@ function renderWithDensity(savedPos = {}) {
 document.querySelectorAll(".density-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     currentMinWeight = parseInt(btn.dataset.min);
-    // Preserve node positions across the re-render
     const savedPos = {};
     if (simulation) {
       simulation.nodes().forEach(n => { savedPos[n.id] = { x: n.x, y: n.y }; });
       simulation.stop();
     }
     renderWithDensity(savedPos);
+  });
+});
+
+document.querySelectorAll(".link-method-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (btn.dataset.method === linkMethod) return;
+    linkMethod = btn.dataset.method;
+    document.querySelectorAll(".link-method-btn").forEach(b =>
+      b.classList.toggle("active", b.dataset.method === linkMethod));
+    // Reset density to "All" when switching methods — edge weights differ by method
+    currentMinWeight = 1;
+    document.querySelectorAll(".density-btn").forEach(b =>
+      b.classList.toggle("active", parseInt(b.dataset.min) === 1));
+    renderWithDensity();
   });
 });
 
@@ -790,9 +867,11 @@ function dragEnd(event, d) {
 const tip = document.getElementById("tooltip");
 
 function showEdgeTip(event, d) {
-  const terms = (d.terms || []).join(", ") || "(no terms)";
+  const terms    = (d.terms || []).join(", ") || "(no terms)";
+  const isSim    = terms.includes("similar");
+  const termLabel = isSim ? "Similarity" : "Shared terms";
   tip.innerHTML = `<strong>${d.source.id} ↔ ${d.target.id}</strong><br>
-    Weight: ${d.weight}<br>Shared: ${terms}`;
+    ${termLabel}: ${terms}`;
   tip.style.display = "block";
   moveEdgeTip(event);
 }
