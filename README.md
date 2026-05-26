@@ -1,96 +1,64 @@
 # Note Networks — Portable Zettelkasten with Live Semantic Graph
 
-A local, self-contained tool that turns a folder of markdown notes into an interactive force-directed graph. It finds thematic connections between notes automatically, without cloud services, embeddings, or an internet connection after setup.
+Turn a folder of markdown notes into an interactive, self-updating knowledge graph — with no cloud services, no embeddings, and no internet connection required after setup.
 
 ---
 
-## What it does
+## Use case
 
-You write short atomic notes — one idea per file. The tool reads them all, computes [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) term weights to find each note's most distinctive vocabulary, then draws edges between notes that share distinctive terms. The result is a navigable map of your corpus: clusters reveal themes, hub nodes are the ideas everything connects through, and isolated nodes surface gaps.
+You have a body of text you want to think with: research notes, book excerpts, meeting summaries, a reading journal. You want to see the structure — which ideas cluster, which are hubs everything passes through, which sit isolated at the edges.
 
-The browser viewer updates automatically whenever you save a note. You pan, zoom, click a node to read it, hover an edge to see which terms connected two notes, and switch between 12 layout algorithms (force-directed, Kamada-Kawai, spectral, circular, and more).
+Note Networks does that. You write short atomic notes, one idea per file. The tool reads them, scores each note's vocabulary with TF-IDF to surface its most distinctive terms, then draws edges between notes that share those terms. The result is a navigable map of your corpus.
 
-Everything runs locally. No account, no API key, no data sent anywhere.
+The graph updates live as you write. Open a note in your editor, save, and the browser re-renders within a few seconds — no manual rebuild, no page refresh.
 
 ---
 
-## Demo corpus
+## What you get
 
-The included seed corpus covers every **Federalist and Anti-Federalist paper with a confirmed or best-estimate Supreme Court citation** — 67 notes total.
-
-**Federalist papers (56):** Ranked by SCOTUS citation frequency using Lupu, *The Most-Cited Federalist Papers* (Constitutional Commentary, 1998), Corley, Howard & Nixon (Political Research Quarterly, 2005), and the Melton citation lists (Kentucky Law Journal, 1996–2007). Papers addressing only narrow legislative mechanics with no constitutional litigation surface are excluded.
-
-**Anti-Federalist papers (11):** Identified by Zelinsky, *Misunderstanding the Anti-Federalist Papers* (Alabama Law Review, 2013) as appearing in SCOTUS opinions, supplemented by the citation trails in *Garcia v. San Antonio* (1985), *Printz v. United States* (1997), *District of Columbia v. Heller* (2008), and *McDonald v. City of Chicago* (2010). AF citations increased sharply after Storing's *Complete Anti-Federalist* (1981) made the full corpus accessible.
-
-Each note is a ~100-word abstract of the paper's constitutional argument.
-
-The graph produced:
-- **Node size** = degree centrality (number of edges)
-- **Node color** = author — Hamilton, Madison, Jay (Federalist); Brutus, Federal Farmer, Centinel, Cato (Anti-Federalist)
-- **Edge weight** = shared distinctive terms
-- **Labels** — Federalist: `F42 · commerce`, `F78 · judiciary`; Anti-Federalist: `B11 · supremacy`, `FF6 · rights`
-
-The judicial power papers (#78, #80, #81, #82) cluster with Brutus #11 and #15, which predicted federal judicial expansion. Executive power papers (#69–#77) form a separate cluster. Federalist #51 (*Checks and Balances*) sits at the structural center.
+- **Semantic co-occurrence graph** built from your actual text, not hand-coded links
+- **Live reload** — file watcher + HEAD poll, updates in ~3 seconds
+- **Interactive viewer**: pan, zoom, click a node to read it, hover an edge to see the shared terms that connected two notes
+- **13 layout algorithms** — Force (FR), Force Atlas, Kamada-Kawai, spectral, circular, concentric, and more
+- **Edge density filter** — collapse the graph from all edges down to only the strongest connections (≥2, ≥3, ≥4 shared terms) with a single click
+- **Gephi-aligned physics controls** — Repulsion and Gravity sliders that match the parameters Gephi users already know
+- **Fully local** — no account, no API key, no data leaves your machine
 
 ---
 
 ## Quickstart
 
 ```bash
-# 1. Clone and install
 git clone https://github.com/tawhetsell/note-networks.git
 cd note-networks
 pip install -r requirements.txt
-
-# 2. Seed the demo corpus (67 notes)
-python tools/seed_from_fed.py
-
-# 3. Build the graph
 python tools/build_graph.py
-
-# 4. Start the watcher + local server
 python tools/watch.py
 ```
 
-Then open **http://localhost:8765/viz/graph.html**.
+Open **http://localhost:8765/viz/graph.html**.
 
-The watcher monitors `notes/` for changes and rebuilds the graph automatically. The browser polls for updates every 3 seconds and re-renders without a manual refresh.
-
-> **Without the watcher:** open `viz/graph.html` directly in a browser. The graph renders, but clicking a node to read its body requires the local server (browsers block `file://` cross-origin fetches).
+Drop `.md` files into `notes/` and the graph rebuilds automatically.
 
 ---
 
-## Optional: enrich with full paper text
+## Note format
 
-```bash
-# Fetch all 85 Federalist Papers from Project Gutenberg (~1 MB, one-time)
-python tools/fed_papers_fetch.py
-
-# Re-seed: prepends each paper's opening sentence to the abstract
-python tools/seed_from_fed.py
-```
-
----
-
-## Using your own notes
-
-Drop `.md` files into `notes/`, then run `python tools/build_graph.py` (or let the watcher do it). The only requirement is a YAML frontmatter block at the top:
+Each note needs a YAML frontmatter block:
 
 ```yaml
 ---
 id: my-note-001
-speaker: ME           # drives node color; use any consistent string
-source: "My source"   # shown in the side panel
+speaker: ME           # drives node color — use author, project, domain, or any grouping
+source: "My source"   # shown in the side panel when you click a node
 tags: [idea, concept]
 word_count: 80
 ---
 
-Note body goes here...
+Note body goes here.
 ```
 
-`speaker` is the categorical field that determines node color. Use it for author, project, domain, or any grouping that makes sense for your corpus. The color palette auto-extends as you add new values.
-
-The `notes/` folder supports subdirectories — `build_graph.py` walks the full tree.
+The `notes/` folder supports subdirectories. `build_graph.py` walks the full tree.
 
 ---
 
@@ -100,27 +68,25 @@ The `notes/` folder supports subdirectories — `build_graph.py` walks the full 
 notes/*.md
     │
     ▼
-tools/build_graph.py          TF-IDF scoring
-    │  ├─ Strip YAML frontmatter
-    │  ├─ Tokenize + remove stopwords
-    │  ├─ Score each term: tf × log(N / (1 + df))
-    │  ├─ Keep top-25 distinctive terms per note
-    │  └─ Draw edges where ≥1 distinctive term is shared
+tools/build_graph.py
+    ├─ Strip YAML frontmatter, tokenize, remove stopwords
+    ├─ TF-IDF: score each term tf × log(N / (1 + df))
+    ├─ Keep top-25 distinctive terms per note
+    └─ Draw an edge between any two notes sharing a top-25 term
     │
     ▼
-data/graph.json               nodes + edges + metadata
+data/graph.json          nodes + edges + metadata
     │
     ▼
-viz/graph.html                d3 v7 force-directed viewer
-    ├─ Fruchterman–Reingold physics (forceManyBody + forceLink)
-    ├─ 12 layout algorithms  (circular, Kamada-Kawai, spectral, …)
+viz/graph.html
+    ├─ d3 v7 force simulation (Fruchterman–Reingold + Force Atlas)
     ├─ Node size = degree centrality
-    ├─ Click node  → side panel with note body
-    ├─ Hover edge  → tooltip with shared terms
-    └─ Auto-reload on graph.json change (HEAD poll every 3 s)
+    ├─ Click node  → side panel with full note body
+    ├─ Hover edge  → tooltip showing shared terms
+    └─ HEAD poll every 3 s → auto-reload on graph change
 ```
 
-TF-IDF down-weights words that appear in many notes (common, uninformative) and surfaces words distinctive to a small number of notes. Two notes share a distinctive term only if it ranks in the top-25 for *both* — reducing noise edges from words that slip past the stopword list.
+TF-IDF down-weights words that appear across many notes and surfaces terms distinctive to a small number. An edge forms only when a term ranks in the top-25 for *both* notes — this cuts noise from common words that slip past the stopword list.
 
 ---
 
@@ -128,43 +94,37 @@ TF-IDF down-weights words that appear in many notes (common, uninformative) and 
 
 ```
 note-networks/
-├── notes/                  ← atomic notes (Markdown)
+├── notes/                    ← your atomic notes (Markdown)
 ├── tools/
-│   ├── build_graph.py      ← notes/ → data/graph.json + co_occurrence.csv
-│   ├── seed_from_fed.py    ← write the demo corpus (67 notes)
-│   ├── fed_papers_fetch.py ← fetch full paper texts from Project Gutenberg
-│   └── watch.py            ← file watcher + local HTTP server (port 8765)
+│   ├── build_graph.py        ← notes/ → data/graph.json
+│   ├── seed_from_aurelius.py ← generates the demo corpus
+│   └── watch.py              ← file watcher + HTTP server on port 8765
 ├── viz/
-│   └── graph.html          ← self-contained browser viewer (d3 v7)
-├── data/                   ← generated artifacts (gitignored — regenerate anytime)
-│   ├── graph.json
-│   └── co_occurrence.csv
-├── requirements.txt
-└── .gitignore
+│   └── graph.html            ← self-contained browser viewer (d3 v7)
+├── data/                     ← generated (gitignored — rebuild anytime)
+└── requirements.txt
 ```
-
----
-
-## Platform support
-
-| Platform | Launch command |
-|---|---|
-| macOS / Linux | `python3 tools/watch.py` |
-| Windows | `python tools/watch.py` or double-click `note-networks-pc.bat` |
-
-All paths resolve from repo root via `Path(__file__).resolve().parent.parent`. The directory is fully portable — copy it to any machine or sync folder and it works without reconfiguration.
-
-RTF file support is available on macOS via the built-in `textutil` converter. RTF files are skipped gracefully on other platforms.
 
 ---
 
 ## Requirements
 
 - Python 3.9+
-- `requests`, `beautifulsoup4`, `watchdog` (see `requirements.txt`)
-- A modern browser (Chrome, Firefox, Safari, Edge)
+- `watchdog` (file watcher), `requests`, `beautifulsoup4` — see `requirements.txt`
+- A modern browser
 
-No Node.js, no build step, no database. `d3.js` loads from a CDN on first open; subsequent loads use the browser cache.
+No Node.js, no build step, no database. `d3.js` loads from CDN on first open; subsequent loads use the browser cache.
+
+| Platform | Command |
+|---|---|
+| macOS / Linux | `python3 tools/watch.py` |
+| Windows | `python tools/watch.py` |
+
+---
+
+## Demo corpus
+
+The repo ships with 74 passages from Marcus Aurelius's *Meditations* (Casaubon translation, Project Gutenberg). Run `python tools/seed_from_aurelius.py` to write them to `notes/`, then `build_graph.py` to render the graph.
 
 ---
 
@@ -172,12 +132,18 @@ No Node.js, no build step, no database. `d3.js` loads from a CDN on first open; 
 
 | Version | Feature |
 |---|---|
-| V1 (current) | TF-IDF co-occurrence, 67-note SCOTUS citation corpus, 12 layout algorithms |
-| V2 | Sentence-transformer embeddings for semantic (not lexical) similarity |
+| V1 (current) | TF-IDF co-occurrence, 13 layout algorithms, live reload |
+| V2 | Sentence-transformer embeddings for semantic similarity |
 | V3 | Named-entity extraction (spaCy) for person / place / concept nodes |
 
 ---
 
-## License
+## Acknowledgements
 
-Tool code is MIT. The included corpus (Federalist and Anti-Federalist Papers, 1787–1788) is public domain.
+Layout algorithms and physics parameter conventions are modelled on [Gephi](https://gephi.org/), the open-source network visualisation platform. The Repulsion / Gravity slider names, the Force Atlas degree-weighted repulsion, and the Kamada-Kawai stress-minimisation approach all follow Gephi's design. Gephi remains the reference tool for serious network analysis; Note Networks borrows its vocabulary to make the physics controls familiar to anyone who has used it.
+
+---
+
+## Built with Claude Code
+
+This application was built with [Claude Code](https://claude.ai/code) — Anthropic's agentic coding tool — running the **Claude Opus 4.7** model inside the VS Code extension. The graph layout algorithms, TF-IDF pipeline, live-reload watcher, and interactive viewer were all designed and implemented through a single iterative conversation with the agent.
