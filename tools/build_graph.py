@@ -142,7 +142,7 @@ def build():
         if p.suffix.lower() in {".md", ".txt", ".rtf"}
     )
     if not files:
-        print(f"No notes found in {NOTES_DIR}. Run: python tools/seed_from_fed.py",
+        print(f"No notes found in {NOTES_DIR}. Run: python tools/seed_from_aurelius.py",
               file=sys.stderr)
         sys.exit(1)
 

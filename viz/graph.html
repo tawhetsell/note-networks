@@ -54,23 +54,31 @@
     background: var(--bg);
   }
 
-  /* ---- CONTROLS (top-left) ---- */
+  /* ---- LEFT PANEL ---- */
+  #left-panel {
+    width: 240px; min-width: 240px;
+    display: flex; flex-direction: column;
+    background: var(--surface); border-right: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  /* ---- CONTROLS (in left panel, no longer absolute) ---- */
   #controls {
-    position: absolute; top: 12px; left: 12px; z-index: 20;
     display: flex; flex-direction: column; gap: 6px;
+    padding: 10px; flex-shrink: 0;
   }
 
   #search {
-    background: var(--surface); border: 1px solid var(--border);
+    background: var(--bg); border: 1px solid var(--border);
     color: var(--text); padding: 6px 10px; border-radius: 6px;
-    width: 260px; outline: none; font-size: 13px;
+    width: 100%; outline: none; font-size: 13px;
   }
   #search:focus { border-color: var(--accent); }
 
   /* ---- FR SLIDERS (collapsible) ---- */
   #fr-panel {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px; padding: 8px 12px; width: 260px;
+    background: none; border: none;
+    padding: 0; width: 100%;
   }
   #fr-panel summary {
     cursor: pointer; font-size: 12px; color: var(--muted);
@@ -112,17 +120,22 @@
   }
   #layout-select:focus { border-color: var(--accent); }
 
+  /* ---- BOTTOM CONTROLS ---- */
+  #bottom-controls {
+    flex-shrink: 0; border-top: 1px solid var(--border);
+    padding: 10px; display: flex; flex-direction: column; gap: 6px;
+  }
+
   #reload-row {
     display: flex; align-items: center; gap: 8px;
   }
-  #reload-btn, #play-btn {
+  #reload-btn, #center-btn {
     padding: 5px 10px; background: none;
     border: 1px solid var(--border); color: var(--muted);
     border-radius: 4px; cursor: pointer; font-size: 12px;
     white-space: nowrap;
   }
-  #reload-btn:hover, #play-btn:hover { border-color: var(--accent); color: var(--accent); }
-  #play-btn.running { border-color: var(--accent); color: var(--accent); }
+  #reload-btn:hover, #center-btn:hover { border-color: var(--accent); color: var(--accent); }
   #reload-btn.spinning { animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -155,6 +168,61 @@
 
   #reload-status {
     font-size: 11px; color: var(--muted);
+  }
+
+  /* ---- NOTE LIST ---- */
+  #note-list {
+    flex: 1; overflow-y: auto;
+    border-top: 1px solid var(--border);
+  }
+  #note-list::-webkit-scrollbar { width: 5px; }
+  #note-list::-webkit-scrollbar-track { background: transparent; }
+  #note-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  #note-list::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  #note-list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 10px; font-size: 11px; color: var(--muted);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  #sort-controls {
+    display: flex; align-items: center; gap: 3px;
+  }
+  #sort-select {
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--muted); padding: 2px 4px; border-radius: 3px;
+    font-size: 10px; cursor: pointer; outline: none;
+    text-transform: none; letter-spacing: 0;
+  }
+  #sort-select:focus, #sort-select:hover { border-color: var(--accent); color: var(--accent); }
+  #sort-dir {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 1px 5px; border-radius: 3px;
+    font-size: 11px; cursor: pointer; line-height: 1.5;
+    text-transform: none; letter-spacing: 0;
+  }
+  #sort-dir:hover { border-color: var(--accent); color: var(--accent); }
+
+  .note-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.1s;
+    user-select: none;
+  }
+  .note-item:hover { background: rgba(255,255,255,0.04); }
+  .note-item.active {
+    background: rgba(122,127,255,0.1);
+    border-left-color: var(--accent);
+  }
+  .note-item-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .note-item-label {
+    flex: 1; font-size: 12px; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   /* ---- EDGE TOOLTIP ---- */
@@ -231,18 +299,54 @@
 <body>
 
 <div id="app">
-  <!-- ---- GRAPH CANVAS ---- -->
-  <div id="canvas-wrap">
-    <svg id="graph"></svg>
-
-    <!-- Top-left controls -->
+  <!-- ---- LEFT PANEL: controls + note list ---- -->
+  <div id="left-panel">
     <div id="controls">
       <input id="search" type="search" placeholder="Search nodes…" autocomplete="off">
+    </div>
+
+    <!-- Scrollable note list — populated by buildNoteList() -->
+    <div id="note-list">
+      <div id="note-list-header">
+        <span id="note-list-count">Notes</span>
+        <div id="sort-controls">
+          <select id="sort-select" title="Sort order">
+            <option value="chron">Chron</option>
+            <option value="title">Title</option>
+            <option value="links">Links</option>
+          </select>
+          <button id="sort-dir" title="Toggle ascending / descending">↑</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom controls: layout, FR params, density, actions -->
+    <div id="bottom-controls">
+      <div id="layout-row">
+        <label for="layout-select">Layout</label>
+        <select id="layout-select">
+          <optgroup label="Physics">
+            <option value="force">Force (FR)</option>
+            <option value="force-atlas">Force Atlas</option>
+            <option value="kk">Kamada-Kawai</option>
+          </optgroup>
+          <optgroup label="Geometric">
+            <option value="circular" selected>Circular</option>
+            <option value="concentric">Concentric</option>
+            <option value="radial">Radial</option>
+            <option value="clustered">Clustered</option>
+            <option value="grid">Grid</option>
+            <option value="spectral">Spectral</option>
+            <option value="spiral">Spiral</option>
+            <option value="linear">Linear</option>
+            <option value="random">Random</option>
+          </optgroup>
+        </select>
+      </div>
 
       <details id="fr-panel">
         <summary>FR parameters — Force &amp; Atlas</summary>
 
-        <!-- repulsion = forceManyBody magnitude; higher = nodes push further apart -->
         <div class="slider-row">
           <div class="slider-header">
             <label>Repulsion</label><span id="lbl-repulsion">300</span>
@@ -250,7 +354,6 @@
           <input type="range" id="sl-repulsion" min="10" max="3000" step="10" value="300">
         </div>
 
-        <!-- gravity = forceRadial strength toward canvas center; 0 = free drift -->
         <div class="slider-row">
           <div class="slider-header">
             <label>Gravity</label><span id="lbl-gravity">0.05</span>
@@ -261,31 +364,7 @@
         <button id="reset-btn">Reset defaults</button>
       </details>
 
-      <!-- Layout picker -->
-      <div id="layout-row">
-        <label for="layout-select">Layout</label>
-        <select id="layout-select">
-          <optgroup label="Physics">
-            <option value="force">Force (FR)</option>
-            <option value="force-atlas">Force Atlas</option>
-            <option value="kk">Kamada-Kawai</option>
-          </optgroup>
-          <optgroup label="Geometric">
-            <option value="circular">Circular</option>
-            <option value="concentric">Concentric</option>
-            <option value="radial">Radial</option>
-            <option value="clustered">Clustered</option>
-            <option value="grid">Grid</option>
-            <option value="bipartite">Bipartite</option>
-            <option value="spectral">Spectral</option>
-            <option value="spiral">Spiral</option>
-            <option value="linear">Linear</option>
-            <option value="random">Random</option>
-          </optgroup>
-        </select>
-      </div>
-
-      <!-- Edge density filter: buttons set minimum shared-term weight per edge -->
+      <!-- Edge density filter -->
       <div id="density-row">
         <label>Density</label>
         <div id="density-btns">
@@ -297,14 +376,17 @@
         <span id="density-count"></span>
       </div>
 
-      <!-- Simulation play/stop + reload + fit -->
       <div id="reload-row">
-        <button id="play-btn" title="Pause simulation">⏸</button>
         <button id="reload-btn" title="Re-fetch graph.json and re-render">↺ Reload</button>
         <button id="center-btn" title="Fit graph to view">⊕ Center</button>
         <span id="reload-status"></span>
       </div>
     </div>
+  </div>
+
+  <!-- ---- GRAPH CANVAS ---- -->
+  <div id="canvas-wrap">
+    <svg id="graph"></svg>
 
     <!-- Edge hover tooltip -->
     <div id="tooltip"></div>
@@ -341,6 +423,22 @@
 // Fixed simulation constants — not exposed as sliders
 const LINK_DIST      = 90;    // forceLink rest length
 const VELOCITY_DECAY = 0.4;   // simulation damping
+const SIM_RUN_MS     = 4000;  // physics layouts auto-stop after this many ms
+let   simTimer       = null;  // handle for the auto-stop timeout
+
+// runSimFor: start (or restart) the simulation and stop it after `ms` milliseconds.
+// Clears any existing timer so rapid re-triggers don't stack.
+function runSimFor(ms) {
+  if (simTimer) clearTimeout(simTimer);
+  simulation.restart();
+  simTimer = setTimeout(() => { simulation.stop(); simTimer = null; }, ms);
+}
+
+// stopSim: cancel the timer and stop immediately (used when user selects a note).
+function stopSim() {
+  if (simTimer) { clearTimeout(simTimer); simTimer = null; }
+  simulation?.stop();
+}
 
 // ---- DEFAULTS (also used by reset button) ----
 const DEFAULTS = {
@@ -355,7 +453,7 @@ const color = d3.scaleOrdinal(d3.schemeTableau10);
 // ---- STATE ----
 let simulation, linkSel, nodeSel, currentParams = { ...DEFAULTS };
 let currentLinks   = [];      // edge objects with resolved source/target; needed by KK layout
-let currentLayout  = "force"; // tracks active layout so reload can re-apply it
+let currentLayout  = "circular"; // tracks active layout so reload can re-apply it
 let allData        = null;    // raw graph.json — kept so density filter can re-render without refetch
 let currentMinWeight = 1;     // minimum edge weight (shared terms) to display
 
@@ -452,8 +550,11 @@ function renderWithDensity(savedPos = {}) {
 
   g.selectAll("*").remove();
   buildGraph({ nodes: filteredNodes, edges: filteredEdges }, savedPos);
-  setSimRunning(currentLayout === "force");
-  if (currentLayout !== "force") applyLayout(currentLayout);
+  if (currentLayout === "force" || currentLayout === "force-atlas") {
+    runSimFor(SIM_RUN_MS);
+  } else {
+    applyLayout(currentLayout);
+  }
 
   // Update edge count badge and active button highlight
   document.getElementById("density-count").textContent = `${filteredEdges.length} edges`;
@@ -493,6 +594,10 @@ function buildGraph(data, savedPos = {}) {
   //               (unlike forceCenter which only corrects center-of-mass drift)
   //   forceCenter with low strength keeps the cluster from floating off canvas
   //   forceCollide prevents node overlap (not in FR original, but helps readability)
+  // Stop the previous simulation before replacing it — d3.forceSimulation starts
+  // its internal rAF timer immediately, so the old timer keeps running if we just
+  // overwrite the variable without stopping it.
+  if (simulation) simulation.stop();
   simulation = d3.forceSimulation(nodes)
     .force("charge",  d3.forceManyBody().strength(-currentParams.repulsion))
     .force("link",    d3.forceLink(links).id(d => d.id).distance(LINK_DIST))
@@ -501,7 +606,7 @@ function buildGraph(data, savedPos = {}) {
     .force("collide", d3.forceCollide(d => nodeRadius(d) + 4))
     .velocityDecay(VELOCITY_DECAY)
     .on("tick", ticked)
-    .on("end",  () => setSimRunning(false));  // auto-update button when sim cools
+    .stop();  // don't auto-run; force layouts call restart() explicitly via runSimFor()
 
   // ---- LINKS ----
   linkSel = g.append("g").attr("class", "links")
@@ -533,9 +638,93 @@ function buildGraph(data, savedPos = {}) {
     .attr("fill", d => color(d.speaker || "UNKNOWN"))
     .attr("stroke", d => d3.color(color(d.speaker || "UNKNOWN")).darker(0.8));
 
-  // Label: "F42 · commerce" — paper number + SCOTUS citation term
   nodeSel.append("text")
     .text(d => shortLabel(d));
+
+  buildNoteList(nodes);
+}
+
+// ---- NOTE LIST ----
+let listNodes = [];   // last node set passed to buildNoteList
+let sortBy    = "chron";
+let sortAsc   = true;
+
+// buildNoteList: store nodes and render. Called from buildGraph on every graph change.
+function buildNoteList(nodes) {
+  listNodes = nodes;
+  renderNoteList();
+}
+
+// renderNoteList: sort and redraw items using current sortBy / sortAsc state.
+function renderNoteList() {
+  const list  = document.getElementById("note-list");
+  const count = document.getElementById("note-list-count");
+  list.querySelectorAll(".note-item").forEach(el => el.remove());
+  count.textContent = `Notes (${listNodes.length})`;
+
+  const comparators = {
+    chron: (a, b) => a.id.localeCompare(b.id),
+    title: (a, b) => shortLabel(a).localeCompare(shortLabel(b), undefined, { numeric: true }),
+    links: (a, b) => (b.degree || 0) - (a.degree || 0),
+  };
+  const sorted = [...listNodes].sort(comparators[sortBy] || comparators.chron);
+  if (!sortAsc) sorted.reverse();
+
+  sorted.forEach(d => {
+    const item = document.createElement("div");
+    item.className     = "note-item";
+    item.dataset.id    = d.id;
+    item.dataset.label = shortLabel(d).toLowerCase();
+
+    const dot = document.createElement("span");
+    dot.className = "note-item-dot";
+    dot.style.background = color(d.speaker || "UNKNOWN");
+
+    const label = document.createElement("span");
+    label.className   = "note-item-label";
+    label.textContent = shortLabel(d);
+
+    item.appendChild(dot);
+    item.appendChild(label);
+    item.addEventListener("click", () => noteListClick(d));
+    list.appendChild(item);
+  });
+}
+
+document.getElementById("sort-select").addEventListener("change", function() {
+  sortBy = this.value;
+  renderNoteList();
+});
+
+document.getElementById("sort-dir").addEventListener("click", function() {
+  sortAsc = !sortAsc;
+  this.textContent = sortAsc ? "↑" : "↓";
+  renderNoteList();
+});
+
+// Mark one list item as active; clear the rest.
+function noteListActivate(id) {
+  document.querySelectorAll(".note-item").forEach(el => {
+    el.classList.toggle("active", el.dataset.id === id);
+  });
+}
+
+// Clicking a list item replicates nodeClick: highlights graph + opens side panel.
+function noteListClick(d) {
+  stopSim();
+  if (nodeSel && linkSel) {
+    const neighbourIds = new Set(
+      linkSel.data()
+        .filter(l => l.source.id === d.id || l.target.id === d.id)
+        .flatMap(l => [l.source.id, l.target.id])
+    );
+    nodeSel.classed("dimmed",      n => !neighbourIds.has(n.id) && n.id !== d.id);
+    nodeSel.classed("highlighted", n => n.id === d.id);
+    linkSel.classed("dimmed",      l => l.source.id !== d.id && l.target.id !== d.id);
+    linkSel.classed("highlighted", l => l.source.id === d.id || l.target.id === d.id);
+  }
+  showPanel(d);
+  noteListActivate(d.id);
 }
 
 // ---- NODE RADIUS ---- scales with degree centrality (number of edges)
@@ -558,9 +747,6 @@ function shortLabel(d) {
     const tag   = d.tags && d.tags[0];
     return tag ? `${base} · ${tag}` : base;
   }
-  // Federalist: "F42 · commerce" (legacy, in case notes are mixed)
-  const fm = d.id.match(/^fed-0*(\d+)/);
-  if (fm) return `F${fm[1]}`;
   return d.id;
 }
 
@@ -619,6 +805,7 @@ function hideEdgeTip() { tip.style.display = "none"; }
 // ---- NODE CLICK → SIDE PANEL ----
 function nodeClick(event, d) {
   event.stopPropagation();
+  stopSim();
 
   // Highlight clicked node and its neighbours
   const neighbourIds = new Set(
@@ -633,6 +820,7 @@ function nodeClick(event, d) {
   linkSel.classed("highlighted", l => l.source.id === d.id || l.target.id === d.id);
 
   showPanel(d);
+  noteListActivate(d.id);
 }
 
 // Clear highlighting when clicking empty canvas
@@ -653,7 +841,10 @@ document.getElementById("panel-close").onclick = () => {
   linkSel?.classed("dimmed highlighted", false);
 };
 
-function closePanel() { panel.classList.add("hidden"); }
+function closePanel() {
+  panel.classList.add("hidden");
+  document.querySelectorAll(".note-item").forEach(el => el.classList.remove("active"));
+}
 
 function showPanel(d) {
   panel.classList.remove("hidden");
@@ -726,19 +917,27 @@ function fetchNoteBody(noteId) {
 }
 
 // ---- SEARCH ----
+// Filters both the graph nodes and the note list simultaneously.
 document.getElementById("search").addEventListener("input", function() {
   const q = this.value.trim().toLowerCase();
-  if (!nodeSel) return;
 
-  if (!q) {
-    nodeSel.classed("dimmed highlighted", false);
-    linkSel.classed("dimmed highlighted", false);
-    return;
+  // Graph highlight
+  if (nodeSel) {
+    if (!q) {
+      nodeSel.classed("dimmed highlighted", false);
+      linkSel.classed("dimmed highlighted", false);
+    } else {
+      nodeSel.classed("dimmed",      d => !d.id.toLowerCase().includes(q) && !shortLabel(d).toLowerCase().includes(q));
+      nodeSel.classed("highlighted", d =>  d.id.toLowerCase().includes(q) ||  shortLabel(d).toLowerCase().includes(q));
+      linkSel.classed("dimmed", true);
+    }
   }
 
-  nodeSel.classed("dimmed",      d => !d.id.toLowerCase().includes(q));
-  nodeSel.classed("highlighted", d =>  d.id.toLowerCase().includes(q));
-  linkSel.classed("dimmed", true);
+  // Note list — hide items that don't match label or id
+  document.querySelectorAll(".note-item").forEach(el => {
+    const match = !q || el.dataset.id.includes(q) || el.dataset.label.includes(q);
+    el.style.display = match ? "" : "none";
+  });
 });
 
 // ---- FR SLIDERS ----
@@ -757,14 +956,13 @@ function bindSlider(sliderId, labelId, paramKey, fmt) {
 function applyParams() {
   if (!simulation) return;
   if (currentLayout === "force-atlas") {
-    // FA2: degree-weighted repulsion — hubs push further apart
     simulation.force("charge").strength(d => -currentParams.repulsion * Math.sqrt(1 + (d.degree || 0)));
   } else {
     simulation.force("charge").strength(-currentParams.repulsion);
   }
   simulation.force("gravity").strength(currentParams.gravity);
-  simulation.alpha(0.5).restart();
-  setSimRunning(true);
+  simulation.alpha(0.5);
+  runSimFor(SIM_RUN_MS);
 }
 
 bindSlider("sl-repulsion", "lbl-repulsion", "repulsion", v => v.toFixed(0));
@@ -787,14 +985,16 @@ function fitView() {
   const nodes = simulation.nodes();
   if (!nodes.length) return;
   const pad = 50;
-  const xs = nodes.map(n => n.x), ys = nodes.map(n => n.y);
+  // Preset layouts store final positions in fx/fy; physics layouts use x/y
+  const xs = nodes.map(n => n.fx ?? n.x);
+  const ys = nodes.map(n => n.fy ?? n.y);
   const x0 = Math.min(...xs) - pad, x1 = Math.max(...xs) + pad;
   const y0 = Math.min(...ys) - pad, y1 = Math.max(...ys) + pad;
   const w = width(), h = height();
-  const scale = Math.min(w / (x1 - x0), h / (y1 - y0), 4);
+  const scale = Math.min(w / (x1 - x0), h / (y1 - y0), 3);
   const tx = (w - scale * (x0 + x1)) / 2;
   const ty = (h - scale * (y0 + y1)) / 2;
-  svg.transition().duration(400)
+  svg.transition().duration(500)
     .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
 }
 document.getElementById("center-btn").addEventListener("click", fitView);
@@ -834,7 +1034,6 @@ function applyLayout(name) {
     "concentric":  layoutConcentric,
     "radial":      layoutRadial,
     "grid":        layoutGrid,
-    "bipartite":   layoutBipartite,
     "clustered":   layoutClustered,
     "spectral":    layoutSpectral,
     "spiral":      layoutSpiral,
@@ -850,11 +1049,10 @@ document.getElementById("layout-select").addEventListener("change", function() {
 // ---- 1. FORCE (Fruchterman-Reingold) ----
 function layoutForce() {
   simulation.nodes().forEach(d => { d.fx = null; d.fy = null; });
-  // Restore standard FR forces in case Force Atlas changed them
   simulation.force("charge").strength(-currentParams.repulsion);
   simulation.force("link").distance(LINK_DIST).strength(0.5);
-  simulation.alphaDecay(0.0228).alpha(0.8).restart();
-  setSimRunning(true);
+  simulation.alphaDecay(0.0228).alpha(0.8);
+  runSimFor(SIM_RUN_MS);
 }
 
 // ---- 1b. FORCE ATLAS ----
@@ -868,8 +1066,8 @@ function layoutForceAtlas() {
   simulation.force("link").distance(30)
     .strength(d => 1 / Math.min((d.source.degree || 1), (d.target.degree || 1)));
   simulation.force("gravity").strength(currentParams.gravity);
-  simulation.alphaDecay(0.01).alpha(1).restart();  // slow cooling = more iterations
-  setSimRunning(true);
+  simulation.alphaDecay(0.01).alpha(1);
+  runSimFor(SIM_RUN_MS * 2);  // FA2 runs twice as long — slow decay needs more time
 }
 
 // ---- 2. CIRCULAR ----
@@ -936,24 +1134,7 @@ function layoutGrid() {
   })));
 }
 
-// ---- 6. BIPARTITE ----
-// Left column = Federalist authors, right = Anti-Federalist + Reference
-// Separates the debate's two sides visually
-function layoutBipartite() {
-  const FEDERALIST = new Set(["HAMILTON", "MADISON", "JAY"]);
-  const nodes = simulation.nodes();
-  const left  = [...nodes].filter(d =>  FEDERALIST.has(d.speaker)).sort((a,b) => b.degree - a.degree);
-  const right = [...nodes].filter(d => !FEDERALIST.has(d.speaker)).sort((a,b) => b.degree - a.degree);
-  const stepL = height() / (left.length  + 1);
-  const stepR = height() / (right.length + 1);
-  const xL = width() * 0.25, xR = width() * 0.75;
-  applyPresetLayout([
-    ...left.map( (d, i) => ({ id: d.id, x: xL, y: (i + 1) * stepL })),
-    ...right.map((d, i) => ({ id: d.id, x: xR, y: (i + 1) * stepR })),
-  ]);
-}
-
-// ---- 7. CLUSTERED ----
+// ---- 6. CLUSTERED ----
 // One mini-circle per speaker; cluster centres arranged in a larger circle
 function layoutClustered() {
   const nodes = simulation.nodes();
@@ -977,7 +1158,7 @@ function layoutClustered() {
   applyPresetLayout(positions);
 }
 
-// ---- 8. KAMADA-KAWAI ----
+// ---- 7. KAMADA-KAWAI ----
 // Stress minimization: nodes placed so visual distance ≈ graph-theoretic distance.
 // Uses BFS for shortest paths, then Newton gradient descent to minimize energy.
 // Reference: Kamada & Kawai, "An Algorithm for Drawing General Undirected Graphs" (1989)
@@ -1067,7 +1248,7 @@ function layoutKK() {
   applyPresetLayout(nodes.map((d, i) => ({ id: d.id, x: pos[i].x, y: pos[i].y })));
 }
 
-// ---- 9. SPECTRAL ----
+// ---- 8. SPECTRAL ----
 // Uses the 2nd and 3rd eigenvectors (Fiedler vectors) of the graph Laplacian.
 // Nodes connected by many edges appear close together; disconnected ones far apart.
 // Computed via Jacobi eigenvalue algorithm on the symmetric Laplacian matrix.
@@ -1140,7 +1321,7 @@ function layoutSpectral() {
   })));
 }
 
-// ---- 10. SPIRAL ----
+// ---- 9. SPIRAL ----
 // Archimedean spiral: r = a + b*θ. Nodes placed by degree rank (highest at centre).
 function layoutSpiral() {
   const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
@@ -1155,7 +1336,7 @@ function layoutSpiral() {
   }));
 }
 
-// ---- 11. LINEAR ----
+// ---- 10. LINEAR ----
 // All nodes on a horizontal line, sorted by degree descending (hub in the centre)
 function layoutLinear() {
   const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
@@ -1167,7 +1348,7 @@ function layoutLinear() {
   })));
 }
 
-// ---- 12. RANDOM ----
+// ---- 11. RANDOM ----
 function layoutRandom() {
   const margin = 60;
   applyPresetLayout(simulation.nodes().map(d => ({
@@ -1177,37 +1358,15 @@ function layoutRandom() {
   })));
 }
 
-// ---- PLAY / STOP ----
-const playBtn = document.getElementById("play-btn");
-
-// setSimRunning: keeps the button label in sync with actual simulation state
-function setSimRunning(running) {
-  playBtn.textContent = running ? "⏸" : "▶";
-  playBtn.title       = running ? "Pause simulation" : "Resume simulation";
-  playBtn.classList.toggle("running", running);
-}
-
-playBtn.addEventListener("click", () => {
-  if (!simulation) return;
-  const isRunning = simulation.alpha() > simulation.alphaMin();
-  if (isRunning) {
-    simulation.stop();
-    setSimRunning(false);
-  } else {
-    // Only resume physics layouts — preset layouts fix all positions
-    if (currentLayout === "force" || currentLayout === "force-atlas") {
-      simulation.alpha(0.3).restart();
-      setSimRunning(true);
-    }
-  }
-});
-
 // ---- RESIZE ----
 window.addEventListener("resize", () => {
   if (simulation) {
     simulation.force("center").x(width() / 2).y(height() / 2);
     simulation.force("gravity").x(width() / 2).y(height() / 2);
-    simulation.alpha(0.3).restart();
+    if (currentLayout === "force" || currentLayout === "force-atlas") {
+      simulation.alpha(0.3);
+      runSimFor(SIM_RUN_MS);
+    }
   }
 });
 </script>

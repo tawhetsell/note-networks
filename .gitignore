@@ -1,5 +1,5 @@
 # Generated graph artifacts — regenerate with build_graph.py
-data/
+data/co_occurrence.csv
 
 # Fetch artifacts (large, regenerable from Project Gutenberg)
 dialogue.txt

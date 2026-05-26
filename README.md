@@ -19,7 +19,7 @@ The graph updates live as you write. Open a note in your editor, save, and the b
 - **Semantic co-occurrence graph** built from your actual text, not hand-coded links
 - **Live reload** — file watcher + HEAD poll, updates in ~3 seconds
 - **Interactive viewer**: pan, zoom, click a node to read it, hover an edge to see the shared terms that connected two notes
-- **13 layout algorithms** — Force (FR), Force Atlas, Kamada-Kawai, spectral, circular, concentric, and more
+- **12 layout algorithms** — Force (FR), Force Atlas, Kamada-Kawai, spectral, circular, concentric, and more
 - **Edge density filter** — collapse the graph from all edges down to only the strongest connections (≥2, ≥3, ≥4 shared terms) with a single click
 - **Gephi-aligned physics controls** — Repulsion and Gravity sliders that match the parameters Gephi users already know
 - **Fully local** — no account, no API key, no data leaves your machine
@@ -132,7 +132,7 @@ The repo ships with 74 passages from Marcus Aurelius's *Meditations* (Casaubon t
 
 | Version | Feature |
 |---|---|
-| V1 (current) | TF-IDF co-occurrence, 13 layout algorithms, live reload |
+| V1 (current) | TF-IDF co-occurrence, 12 layout algorithms, live reload |
 | V2 | Sentence-transformer embeddings for semantic similarity |
 | V3 | Named-entity extraction (spaCy) for person / place / concept nodes |
 

@@ -1,0 +1,4735 @@
+{
+  "nodes": [
+    {
+      "id": "med-01-004",
+      "label": "med-01-004",
+      "word_count": 224,
+      "degree": 0,
+      "speaker": "BOOK_I",
+      "tags": [
+        "mind",
+        "virtue",
+        "society"
+      ],
+      "source": "Meditations I.4"
+    },
+    {
+      "id": "med-01-013",
+      "label": "med-01-013",
+      "word_count": 913,
+      "degree": 19,
+      "speaker": "BOOK_I",
+      "tags": [
+        "mind",
+        "virtue",
+        "present",
+        "body",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations I.13"
+    },
+    {
+      "id": "med-01-014",
+      "label": "med-01-014",
+      "word_count": 779,
+      "degree": 14,
+      "speaker": "BOOK_I",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "body",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations I.14"
+    },
+    {
+      "id": "med-01-015",
+      "label": "med-01-015",
+      "word_count": 221,
+      "degree": 9,
+      "speaker": "BOOK_I",
+      "tags": [
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "body",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations I.15"
+    },
+    {
+      "id": "med-01-017",
+      "label": "med-01-017",
+      "word_count": 199,
+      "degree": 8,
+      "speaker": "BOOK_I",
+      "tags": [
+        "death",
+        "nature",
+        "virtue",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations I.17"
+    },
+    {
+      "id": "med-02-007",
+      "label": "med-02-007",
+      "word_count": 157,
+      "degree": 9,
+      "speaker": "BOOK_II",
+      "tags": [
+        "reason",
+        "passion"
+      ],
+      "source": "Meditations II.7"
+    },
+    {
+      "id": "med-02-008",
+      "label": "med-02-008",
+      "word_count": 323,
+      "degree": 16,
+      "speaker": "BOOK_II",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations II.8"
+    },
+    {
+      "id": "med-02-011",
+      "label": "med-02-011",
+      "word_count": 226,
+      "degree": 6,
+      "speaker": "BOOK_II",
+      "tags": [
+        "mind",
+        "virtue",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations II.11"
+    },
+    {
+      "id": "med-02-012",
+      "label": "med-02-012",
+      "word_count": 294,
+      "degree": 14,
+      "speaker": "BOOK_II",
+      "tags": [
+        "death",
+        "nature",
+        "present",
+        "society"
+      ],
+      "source": "Meditations II.12"
+    },
+    {
+      "id": "med-02-014",
+      "label": "med-02-014",
+      "word_count": 195,
+      "degree": 2,
+      "speaker": "BOOK_II",
+      "tags": [
+        "mind",
+        "nature",
+        "reason",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations II.14"
+    },
+    {
+      "id": "med-02-015",
+      "label": "med-02-015",
+      "word_count": 250,
+      "degree": 10,
+      "speaker": "BOOK_II",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "body",
+        "society"
+      ],
+      "source": "Meditations II.15"
+    },
+    {
+      "id": "med-03-001",
+      "label": "med-03-001",
+      "word_count": 225,
+      "degree": 9,
+      "speaker": "BOOK_III",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "reason",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations III.1"
+    },
+    {
+      "id": "med-03-002",
+      "label": "med-03-002",
+      "word_count": 335,
+      "degree": 7,
+      "speaker": "BOOK_III",
+      "tags": [
+        "mind",
+        "nature",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations III.2"
+    },
+    {
+      "id": "med-03-004",
+      "label": "med-03-004",
+      "word_count": 601,
+      "degree": 13,
+      "speaker": "BOOK_III",
+      "tags": [
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations III.4"
+    },
+    {
+      "id": "med-03-007",
+      "label": "med-03-007",
+      "word_count": 392,
+      "degree": 18,
+      "speaker": "BOOK_III",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations III.7"
+    },
+    {
+      "id": "med-03-010",
+      "label": "med-03-010",
+      "word_count": 208,
+      "degree": 7,
+      "speaker": "BOOK_III",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations III.10"
+    },
+    {
+      "id": "med-03-017",
+      "label": "med-03-017",
+      "word_count": 255,
+      "degree": 0,
+      "speaker": "BOOK_III",
+      "tags": [
+        "mind",
+        "virtue",
+        "reason",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations III.17"
+    },
+    {
+      "id": "med-04-003",
+      "label": "med-04-003",
+      "word_count": 710,
+      "degree": 28,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "body",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations IV.3"
+    },
+    {
+      "id": "med-04-016",
+      "label": "med-04-016",
+      "word_count": 312,
+      "degree": 9,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "death",
+        "nature",
+        "virtue",
+        "present",
+        "society"
+      ],
+      "source": "Meditations IV.16"
+    },
+    {
+      "id": "med-04-017",
+      "label": "med-04-017",
+      "word_count": 250,
+      "degree": 17,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "death",
+        "reason",
+        "present",
+        "body",
+        "society"
+      ],
+      "source": "Meditations IV.17"
+    },
+    {
+      "id": "med-04-027",
+      "label": "med-04-027",
+      "word_count": 244,
+      "degree": 9,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "death",
+        "mind",
+        "present",
+        "society"
+      ],
+      "source": "Meditations IV.27"
+    },
+    {
+      "id": "med-04-028",
+      "label": "med-04-028",
+      "word_count": 224,
+      "degree": 4,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "nature",
+        "reason",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations IV.28"
+    },
+    {
+      "id": "med-04-039",
+      "label": "med-04-039",
+      "word_count": 283,
+      "degree": 7,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "death",
+        "nature",
+        "present",
+        "society"
+      ],
+      "source": "Meditations IV.39"
+    },
+    {
+      "id": "med-04-041",
+      "label": "med-04-041",
+      "word_count": 235,
+      "degree": 7,
+      "speaker": "BOOK_IV",
+      "tags": [
+        "nature",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations IV.41"
+    },
+    {
+      "id": "med-05-001",
+      "label": "med-05-001",
+      "word_count": 367,
+      "degree": 12,
+      "speaker": "BOOK_V",
+      "tags": [
+        "nature",
+        "virtue",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations V.1"
+    },
+    {
+      "id": "med-05-006",
+      "label": "med-05-006",
+      "word_count": 351,
+      "degree": 11,
+      "speaker": "BOOK_V",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations V.6"
+    },
+    {
+      "id": "med-05-008",
+      "label": "med-05-008",
+      "word_count": 584,
+      "degree": 19,
+      "speaker": "BOOK_V",
+      "tags": [
+        "nature",
+        "virtue",
+        "present",
+        "body",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations V.8"
+    },
+    {
+      "id": "med-05-009",
+      "label": "med-05-009",
+      "word_count": 527,
+      "degree": 13,
+      "speaker": "BOOK_V",
+      "tags": [
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations V.9"
+    },
+    {
+      "id": "med-05-014",
+      "label": "med-05-014",
+      "word_count": 283,
+      "degree": 1,
+      "speaker": "BOOK_V",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "society"
+      ],
+      "source": "Meditations V.14"
+    },
+    {
+      "id": "med-05-019",
+      "label": "med-05-019",
+      "word_count": 339,
+      "degree": 18,
+      "speaker": "BOOK_V",
+      "tags": [
+        "mind",
+        "nature",
+        "present",
+        "society"
+      ],
+      "source": "Meditations V.19"
+    },
+    {
+      "id": "med-06-011",
+      "label": "med-06-011",
+      "word_count": 234,
+      "degree": 6,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "mind",
+        "nature",
+        "present",
+        "body",
+        "society"
+      ],
+      "source": "Meditations VI.11"
+    },
+    {
+      "id": "med-06-014",
+      "label": "med-06-014",
+      "word_count": 198,
+      "degree": 3,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "nature",
+        "present",
+        "body",
+        "society"
+      ],
+      "source": "Meditations VI.14"
+    },
+    {
+      "id": "med-06-015",
+      "label": "med-06-015",
+      "word_count": 435,
+      "degree": 6,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations VI.15"
+    },
+    {
+      "id": "med-06-028",
+      "label": "med-06-028",
+      "word_count": 275,
+      "degree": 7,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "society"
+      ],
+      "source": "Meditations VI.28"
+    },
+    {
+      "id": "med-06-033",
+      "label": "med-06-033",
+      "word_count": 242,
+      "degree": 3,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present"
+      ],
+      "source": "Meditations VI.33"
+    },
+    {
+      "id": "med-06-039",
+      "label": "med-06-039",
+      "word_count": 333,
+      "degree": 10,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations VI.39"
+    },
+    {
+      "id": "med-06-042",
+      "label": "med-06-042",
+      "word_count": 219,
+      "degree": 6,
+      "speaker": "BOOK_VI",
+      "tags": [
+        "death",
+        "nature",
+        "present",
+        "society"
+      ],
+      "source": "Meditations VI.42"
+    },
+    {
+      "id": "med-07-005",
+      "label": "med-07-005",
+      "word_count": 277,
+      "degree": 12,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "death",
+        "nature",
+        "virtue",
+        "reason",
+        "present"
+      ],
+      "source": "Meditations VII.5"
+    },
+    {
+      "id": "med-07-016",
+      "label": "med-07-016",
+      "word_count": 297,
+      "degree": 19,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "mind",
+        "nature",
+        "reason",
+        "society"
+      ],
+      "source": "Meditations VII.16"
+    },
+    {
+      "id": "med-07-026",
+      "label": "med-07-026",
+      "word_count": 416,
+      "degree": 12,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VII.26"
+    },
+    {
+      "id": "med-07-030",
+      "label": "med-07-030",
+      "word_count": 273,
+      "degree": 12,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "body",
+        "society"
+      ],
+      "source": "Meditations VII.30"
+    },
+    {
+      "id": "med-07-031",
+      "label": "med-07-031",
+      "word_count": 267,
+      "degree": 9,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VII.31"
+    },
+    {
+      "id": "med-07-037",
+      "label": "med-07-037",
+      "word_count": 278,
+      "degree": 4,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "mind",
+        "nature",
+        "body",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VII.37"
+    },
+    {
+      "id": "med-07-039",
+      "label": "med-07-039",
+      "word_count": 248,
+      "degree": 6,
+      "speaker": "BOOK_VII",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "body",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations VII.39"
+    },
+    {
+      "id": "med-08-001",
+      "label": "med-08-001",
+      "word_count": 334,
+      "degree": 11,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VIII.1"
+    },
+    {
+      "id": "med-08-006",
+      "label": "med-08-006",
+      "word_count": 246,
+      "degree": 11,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "nature",
+        "virtue",
+        "society"
+      ],
+      "source": "Meditations VIII.6"
+    },
+    {
+      "id": "med-08-019",
+      "label": "med-08-019",
+      "word_count": 230,
+      "degree": 14,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "death",
+        "nature",
+        "reason",
+        "body",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VIII.19"
+    },
+    {
+      "id": "med-08-032",
+      "label": "med-08-032",
+      "word_count": 239,
+      "degree": 15,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "nature",
+        "present",
+        "body",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations VIII.32"
+    },
+    {
+      "id": "med-08-039",
+      "label": "med-08-039",
+      "word_count": 198,
+      "degree": 12,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "mind",
+        "nature",
+        "reason",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VIII.39"
+    },
+    {
+      "id": "med-08-045",
+      "label": "med-08-045",
+      "word_count": 275,
+      "degree": 18,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations VIII.45"
+    },
+    {
+      "id": "med-08-048",
+      "label": "med-08-048",
+      "word_count": 212,
+      "degree": 9,
+      "speaker": "BOOK_VIII",
+      "tags": [
+        "nature",
+        "society"
+      ],
+      "source": "Meditations VIII.48"
+    },
+    {
+      "id": "med-09-001",
+      "label": "med-09-001",
+      "word_count": 575,
+      "degree": 11,
+      "speaker": "BOOK_IX",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "body",
+        "providence",
+        "passion"
+      ],
+      "source": "Meditations IX.1"
+    },
+    {
+      "id": "med-09-003",
+      "label": "med-09-003",
+      "word_count": 381,
+      "degree": 25,
+      "speaker": "BOOK_IX",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations IX.3"
+    },
+    {
+      "id": "med-09-007",
+      "label": "med-09-007",
+      "word_count": 479,
+      "degree": 22,
+      "speaker": "BOOK_IX",
+      "tags": [
+        "mind",
+        "nature",
+        "reason",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations IX.7"
+    },
+    {
+      "id": "med-09-029",
+      "label": "med-09-029",
+      "word_count": 239,
+      "degree": 12,
+      "speaker": "BOOK_IX",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations IX.29"
+    },
+    {
+      "id": "med-09-040",
+      "label": "med-09-040",
+      "word_count": 330,
+      "degree": 20,
+      "speaker": "BOOK_IX",
+      "tags": [
+        "mind",
+        "providence",
+        "passion"
+      ],
+      "source": "Meditations IX.40"
+    },
+    {
+      "id": "med-09-043",
+      "label": "med-09-043",
+      "word_count": 582,
+      "degree": 19,
+      "speaker": "BOOK_IX",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations IX.43"
+    },
+    {
+      "id": "med-10-006",
+      "label": "med-10-006",
+      "word_count": 349,
+      "degree": 16,
+      "speaker": "BOOK_X",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "society"
+      ],
+      "source": "Meditations X.6"
+    },
+    {
+      "id": "med-10-007",
+      "label": "med-10-007",
+      "word_count": 521,
+      "degree": 16,
+      "speaker": "BOOK_X",
+      "tags": [
+        "nature",
+        "reason",
+        "present"
+      ],
+      "source": "Meditations X.7"
+    },
+    {
+      "id": "med-10-008",
+      "label": "med-10-008",
+      "word_count": 604,
+      "degree": 21,
+      "speaker": "BOOK_X",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "body",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations X.8"
+    },
+    {
+      "id": "med-10-033",
+      "label": "med-10-033",
+      "word_count": 560,
+      "degree": 21,
+      "speaker": "BOOK_X",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "body",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations X.33"
+    },
+    {
+      "id": "med-10-034",
+      "label": "med-10-034",
+      "word_count": 306,
+      "degree": 3,
+      "speaker": "BOOK_X",
+      "tags": [
+        "death",
+        "nature",
+        "virtue",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations X.34"
+    },
+    {
+      "id": "med-10-036",
+      "label": "med-10-036",
+      "word_count": 332,
+      "degree": 15,
+      "speaker": "BOOK_X",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations X.36"
+    },
+    {
+      "id": "med-11-001",
+      "label": "med-11-001",
+      "word_count": 356,
+      "degree": 12,
+      "speaker": "BOOK_XI",
+      "tags": [
+        "mind",
+        "nature",
+        "reason",
+        "society"
+      ],
+      "source": "Meditations XI.1"
+    },
+    {
+      "id": "med-11-005",
+      "label": "med-11-005",
+      "word_count": 310,
+      "degree": 12,
+      "speaker": "BOOK_XI",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations XI.5"
+    },
+    {
+      "id": "med-11-015",
+      "label": "med-11-015",
+      "word_count": 213,
+      "degree": 11,
+      "speaker": "BOOK_XI",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "society"
+      ],
+      "source": "Meditations XI.15"
+    },
+    {
+      "id": "med-11-016",
+      "label": "med-11-016",
+      "word_count": 1063,
+      "degree": 19,
+      "speaker": "BOOK_XI",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations XI.16"
+    },
+    {
+      "id": "med-11-018",
+      "label": "med-11-018",
+      "word_count": 283,
+      "degree": 10,
+      "speaker": "BOOK_XI",
+      "tags": [
+        "mind",
+        "nature",
+        "body",
+        "providence",
+        "passion"
+      ],
+      "source": "Meditations XI.18"
+    },
+    {
+      "id": "med-11-031",
+      "label": "med-11-031",
+      "word_count": 194,
+      "degree": 10,
+      "speaker": "BOOK_XI",
+      "tags": [
+        "reason",
+        "present"
+      ],
+      "source": "Meditations XI.31"
+    },
+    {
+      "id": "med-12-001",
+      "label": "med-12-001",
+      "word_count": 260,
+      "degree": 18,
+      "speaker": "BOOK_XII",
+      "tags": [
+        "mind",
+        "nature",
+        "virtue",
+        "present",
+        "body",
+        "providence",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations XII.1"
+    },
+    {
+      "id": "med-12-002",
+      "label": "med-12-002",
+      "word_count": 348,
+      "degree": 19,
+      "speaker": "BOOK_XII",
+      "tags": [
+        "mind",
+        "virtue",
+        "reason",
+        "present",
+        "body",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations XII.2"
+    },
+    {
+      "id": "med-12-004",
+      "label": "med-12-004",
+      "word_count": 226,
+      "degree": 8,
+      "speaker": "BOOK_XII",
+      "tags": [
+        "death",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations XII.4"
+    },
+    {
+      "id": "med-12-017",
+      "label": "med-12-017",
+      "word_count": 300,
+      "degree": 14,
+      "speaker": "BOOK_XII",
+      "tags": [
+        "death",
+        "mind",
+        "nature",
+        "virtue",
+        "reason",
+        "present",
+        "body",
+        "providence",
+        "society"
+      ],
+      "source": "Meditations XII.17"
+    },
+    {
+      "id": "med-12-027",
+      "label": "med-12-027",
+      "word_count": 305,
+      "degree": 19,
+      "speaker": "BOOK_XII",
+      "tags": [
+        "death",
+        "nature",
+        "virtue",
+        "present",
+        "society",
+        "passion"
+      ],
+      "source": "Meditations XII.27"
+    }
+  ],
+  "edges": [
+    {
+      "from": "med-01-013",
+      "to": "med-01-014",
+      "weight": 1,
+      "terms": [
+        "never"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-01-017",
+      "weight": 1,
+      "terms": [
+        "necessary"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-02-008",
+      "weight": 2,
+      "terms": [
+        "care",
+        "neither"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-03-001",
+      "weight": 1,
+      "terms": [
+        "knowledge"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-03-004",
+      "weight": 1,
+      "terms": [
+        "himself"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-05-008",
+      "weight": 1,
+      "terms": [
+        "perfect"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-05-019",
+      "weight": 1,
+      "terms": [
+        "whereof"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-06-033",
+      "weight": 1,
+      "terms": [
+        "necessary"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-06-039",
+      "weight": 1,
+      "terms": [
+        "conversation"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "public"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "himself"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-09-001",
+      "weight": 2,
+      "terms": [
+        "ancient",
+        "occasions"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "whereof"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "whereof"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "neither"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "friends"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "perfect"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "never"
+      ]
+    },
+    {
+      "from": "med-01-013",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "neither"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-02-008",
+      "weight": 1,
+      "terms": [
+        "gods"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-05-001",
+      "weight": 2,
+      "terms": [
+        "love",
+        "myself"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-05-008",
+      "weight": 1,
+      "terms": [
+        "brought"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-06-011",
+      "weight": 1,
+      "terms": [
+        "matters"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-06-039",
+      "weight": 1,
+      "terms": [
+        "myself"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "help"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "occasion"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-09-040",
+      "weight": 2,
+      "terms": [
+        "gods",
+        "help"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "received"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-10-034",
+      "weight": 1,
+      "terms": [
+        "almost"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "brought"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-12-004",
+      "weight": 2,
+      "terms": [
+        "gods",
+        "never"
+      ]
+    },
+    {
+      "from": "med-01-014",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "lived"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-02-012",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-08-001",
+      "weight": 1,
+      "terms": [
+        "truly"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "unthankful"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "truly"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-01-015",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "truly"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-02-011",
+      "weight": 1,
+      "terms": [
+        "proceeds"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-06-033",
+      "weight": 1,
+      "terms": [
+        "necessary"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-06-039",
+      "weight": 1,
+      "terms": [
+        "general"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "flow"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "providence"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-12-001",
+      "weight": 2,
+      "terms": [
+        "divine",
+        "providence"
+      ]
+    },
+    {
+      "from": "med-01-017",
+      "to": "med-12-017",
+      "weight": 3,
+      "terms": [
+        "depends",
+        "divine",
+        "providence"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-02-008",
+      "weight": 1,
+      "terms": [
+        "through"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-04-041",
+      "weight": 1,
+      "terms": [
+        "grief"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-06-014",
+      "weight": 1,
+      "terms": [
+        "thereof"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "through"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-08-001",
+      "weight": 1,
+      "terms": [
+        "philosopher"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "lust"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "through"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-11-016",
+      "weight": 3,
+      "terms": [
+        "anger",
+        "angry",
+        "sins"
+      ]
+    },
+    {
+      "from": "med-02-007",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "vulgar"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-04-003",
+      "weight": 1,
+      "terms": [
+        "dost"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-05-006",
+      "weight": 1,
+      "terms": [
+        "dost"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-05-019",
+      "weight": 1,
+      "terms": [
+        "hurt"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "through"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-08-039",
+      "weight": 1,
+      "terms": [
+        "evil"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-09-001",
+      "weight": 2,
+      "terms": [
+        "equally",
+        "world"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "dost"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "gods"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "dost"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-10-033",
+      "weight": 3,
+      "terms": [
+        "hurt",
+        "neither",
+        "through"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "there"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "gods"
+      ]
+    },
+    {
+      "from": "med-02-008",
+      "to": "med-12-017",
+      "weight": 2,
+      "terms": [
+        "evil",
+        "neither"
+      ]
+    },
+    {
+      "from": "med-02-011",
+      "to": "med-03-004",
+      "weight": 1,
+      "terms": [
+        "thoughts"
+      ]
+    },
+    {
+      "from": "med-02-011",
+      "to": "med-04-041",
+      "weight": 1,
+      "terms": [
+        "wretched"
+      ]
+    },
+    {
+      "from": "med-02-011",
+      "to": "med-05-006",
+      "weight": 1,
+      "terms": [
+        "sensible"
+      ]
+    },
+    {
+      "from": "med-02-011",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "thoughts"
+      ]
+    },
+    {
+      "from": "med-02-011",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "sometimes"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-03-002",
+      "weight": 1,
+      "terms": [
+        "parts"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-04-003",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-08-006",
+      "weight": 2,
+      "terms": [
+        "equal",
+        "part"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-08-039",
+      "weight": 1,
+      "terms": [
+        "properly"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "lose"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-10-006",
+      "weight": 2,
+      "terms": [
+        "part",
+        "parts"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-10-007",
+      "weight": 2,
+      "terms": [
+        "parts",
+        "same"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "properly"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-02-012",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "years"
+      ]
+    },
+    {
+      "from": "med-02-014",
+      "to": "med-03-010",
+      "weight": 1,
+      "terms": [
+        "rashly"
+      ]
+    },
+    {
+      "from": "med-02-014",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "natures"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-03-007",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-04-003",
+      "weight": 1,
+      "terms": [
+        "soul"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-04-028",
+      "weight": 1,
+      "terms": [
+        "obscure"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-05-009",
+      "weight": 1,
+      "terms": [
+        "philosophy"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-08-001",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "fame"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "soul"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-02-015",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "elements"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-05-008",
+      "weight": 1,
+      "terms": [
+        "because"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-07-030",
+      "weight": 1,
+      "terms": [
+        "intellective"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-07-031",
+      "weight": 1,
+      "terms": [
+        "fail"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "rectify"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "continue"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "continue"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "nearer"
+      ]
+    },
+    {
+      "from": "med-03-001",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "because"
+      ]
+    },
+    {
+      "from": "med-03-002",
+      "to": "med-04-016",
+      "weight": 1,
+      "terms": [
+        "itself"
+      ]
+    },
+    {
+      "from": "med-03-002",
+      "to": "med-05-009",
+      "weight": 1,
+      "terms": [
+        "itself"
+      ]
+    },
+    {
+      "from": "med-03-002",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "naturally"
+      ]
+    },
+    {
+      "from": "med-03-002",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "parts"
+      ]
+    },
+    {
+      "from": "med-03-002",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "parts"
+      ]
+    },
+    {
+      "from": "med-03-002",
+      "to": "med-10-033",
+      "weight": 2,
+      "terms": [
+        "itself",
+        "natural"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-03-007",
+      "weight": 1,
+      "terms": [
+        "best"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-04-003",
+      "weight": 1,
+      "terms": [
+        "free"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-04-016",
+      "weight": 1,
+      "terms": [
+        "praise"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-05-009",
+      "weight": 2,
+      "terms": [
+        "especially",
+        "manner"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-06-011",
+      "weight": 1,
+      "terms": [
+        "especially"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-06-028",
+      "weight": 1,
+      "terms": [
+        "free"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "thoughts"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "remembers"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "himself"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "whatsoever"
+      ]
+    },
+    {
+      "from": "med-03-004",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "whatsoever"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-03-010",
+      "weight": 1,
+      "terms": [
+        "rational"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-04-003",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-04-027",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-05-001",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-06-039",
+      "weight": 1,
+      "terms": [
+        "profitable"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-08-001",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-08-045",
+      "weight": 2,
+      "terms": [
+        "nothing",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-09-003",
+      "weight": 2,
+      "terms": [
+        "shalt",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-09-043",
+      "weight": 2,
+      "terms": [
+        "find",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-10-008",
+      "weight": 2,
+      "terms": [
+        "shalt",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-12-001",
+      "weight": 2,
+      "terms": [
+        "shalt",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-03-007",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-03-010",
+      "to": "med-04-003",
+      "weight": 1,
+      "terms": [
+        "little"
+      ]
+    },
+    {
+      "from": "med-03-010",
+      "to": "med-07-026",
+      "weight": 1,
+      "terms": [
+        "liveth"
+      ]
+    },
+    {
+      "from": "med-03-010",
+      "to": "med-07-030",
+      "weight": 1,
+      "terms": [
+        "constitution"
+      ]
+    },
+    {
+      "from": "med-03-010",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "corner"
+      ]
+    },
+    {
+      "from": "med-03-010",
+      "to": "med-11-015",
+      "weight": 3,
+      "terms": [
+        "beget",
+        "corner",
+        "withal"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-04-041",
+      "weight": 1,
+      "terms": [
+        "canst"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-05-001",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-05-006",
+      "weight": 1,
+      "terms": [
+        "dost"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-05-019",
+      "weight": 1,
+      "terms": [
+        "consider"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-06-015",
+      "weight": 1,
+      "terms": [
+        "canst"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-06-028",
+      "weight": 1,
+      "terms": [
+        "free"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "mind"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-07-026",
+      "weight": 1,
+      "terms": [
+        "places"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-07-039",
+      "weight": 1,
+      "terms": [
+        "tranquillity"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-08-006",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-09-003",
+      "weight": 2,
+      "terms": [
+        "dost",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "soul"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-09-043",
+      "weight": 3,
+      "terms": [
+        "dost",
+        "thou",
+        "thyself"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "opinion"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-04-003",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "mind"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-04-017",
+      "weight": 1,
+      "terms": [
+        "dead"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-04-039",
+      "weight": 2,
+      "terms": [
+        "after",
+        "dead"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-05-009",
+      "weight": 1,
+      "terms": [
+        "itself"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "commended"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "worse"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "worse"
+      ]
+    },
+    {
+      "from": "med-04-016",
+      "to": "med-10-033",
+      "weight": 2,
+      "terms": [
+        "itself",
+        "worse"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-04-039",
+      "weight": 1,
+      "terms": [
+        "dead"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-05-008",
+      "weight": 1,
+      "terms": [
+        "bodies"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-05-019",
+      "weight": 1,
+      "terms": [
+        "subsist"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "able"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "bodies"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-07-026",
+      "weight": 2,
+      "terms": [
+        "death",
+        "place"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-08-048",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "earth"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "number"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "partly"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-04-017",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-06-028",
+      "weight": 1,
+      "terms": [
+        "over"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-06-042",
+      "weight": 1,
+      "terms": [
+        "times"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "over"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-04-027",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-04-028",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "names"
+      ]
+    },
+    {
+      "from": "med-04-028",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "always"
+      ]
+    },
+    {
+      "from": "med-04-028",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "always"
+      ]
+    },
+    {
+      "from": "med-04-039",
+      "to": "med-06-042",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-04-039",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-04-039",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-04-039",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-04-039",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-04-041",
+      "to": "med-06-015",
+      "weight": 1,
+      "terms": [
+        "canst"
+      ]
+    },
+    {
+      "from": "med-04-041",
+      "to": "med-07-039",
+      "weight": 2,
+      "terms": [
+        "befallen",
+        "present"
+      ]
+    },
+    {
+      "from": "med-04-041",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "happy"
+      ]
+    },
+    {
+      "from": "med-04-041",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "modest"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-06-039",
+      "weight": 1,
+      "terms": [
+        "myself"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-09-040",
+      "weight": 2,
+      "terms": [
+        "thou",
+        "wilt"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "action"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-11-016",
+      "weight": 2,
+      "terms": [
+        "born",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-05-001",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-05-008",
+      "weight": 1,
+      "terms": [
+        "hath"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-05-019",
+      "weight": 1,
+      "terms": [
+        "done"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "dost"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-09-043",
+      "weight": 4,
+      "terms": [
+        "done",
+        "dost",
+        "require",
+        "turn"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "done"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "ready"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "fruit"
+      ]
+    },
+    {
+      "from": "med-05-006",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "borne"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-05-019",
+      "weight": 2,
+      "terms": [
+        "together",
+        "whole"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-06-039",
+      "weight": 2,
+      "terms": [
+        "happen",
+        "particular"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "bodies"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-08-006",
+      "weight": 1,
+      "terms": [
+        "together"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "together"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "happen"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-09-001",
+      "weight": 1,
+      "terms": [
+        "universe"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "together"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "accept"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "universe"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "fall"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "brought"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "perfect"
+      ]
+    },
+    {
+      "from": "med-05-008",
+      "to": "med-12-017",
+      "weight": 2,
+      "terms": [
+        "because",
+        "whole"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-06-011",
+      "weight": 1,
+      "terms": [
+        "especially"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-06-028",
+      "weight": 1,
+      "terms": [
+        "bear"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-08-001",
+      "weight": 1,
+      "terms": [
+        "requireth"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "bear"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "kind"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "liberty"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "itself"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "bear"
+      ]
+    },
+    {
+      "from": "med-05-009",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "liberty"
+      ]
+    },
+    {
+      "from": "med-05-014",
+      "to": "med-09-001",
+      "weight": 1,
+      "terms": [
+        "doth"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-06-014",
+      "weight": 1,
+      "terms": [
+        "sight"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-06-039",
+      "weight": 1,
+      "terms": [
+        "city"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-08-006",
+      "weight": 1,
+      "terms": [
+        "together"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "together"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "together"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "whereof"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "done"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "whereof"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-10-033",
+      "weight": 3,
+      "terms": [
+        "city",
+        "done",
+        "hurt"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "overseen"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "whole"
+      ]
+    },
+    {
+      "from": "med-05-019",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "city"
+      ]
+    },
+    {
+      "from": "med-06-011",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "useful"
+      ]
+    },
+    {
+      "from": "med-06-011",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "excellent"
+      ]
+    },
+    {
+      "from": "med-06-011",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "excellent"
+      ]
+    },
+    {
+      "from": "med-06-014",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "breathe"
+      ]
+    },
+    {
+      "from": "med-06-015",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "effect"
+      ]
+    },
+    {
+      "from": "med-06-015",
+      "to": "med-07-030",
+      "weight": 1,
+      "terms": [
+        "subject"
+      ]
+    },
+    {
+      "from": "med-06-015",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "praises"
+      ]
+    },
+    {
+      "from": "med-06-015",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "subject"
+      ]
+    },
+    {
+      "from": "med-06-028",
+      "to": "med-07-005",
+      "weight": 1,
+      "terms": [
+        "over"
+      ]
+    },
+    {
+      "from": "med-06-028",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "bear"
+      ]
+    },
+    {
+      "from": "med-06-028",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "bear"
+      ]
+    },
+    {
+      "from": "med-06-033",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "another"
+      ]
+    },
+    {
+      "from": "med-06-039",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "happen"
+      ]
+    },
+    {
+      "from": "med-06-039",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "city"
+      ]
+    },
+    {
+      "from": "med-06-039",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "city"
+      ]
+    },
+    {
+      "from": "med-06-042",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-06-042",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-06-042",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-06-042",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-07-005",
+      "to": "med-07-016",
+      "weight": 1,
+      "terms": [
+        "joint"
+      ]
+    },
+    {
+      "from": "med-07-005",
+      "to": "med-07-039",
+      "weight": 1,
+      "terms": [
+        "alacrity"
+      ]
+    },
+    {
+      "from": "med-07-005",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "alone"
+      ]
+    },
+    {
+      "from": "med-07-005",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "help"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-07-039",
+      "weight": 1,
+      "terms": [
+        "members"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-09-001",
+      "weight": 1,
+      "terms": [
+        "against"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-09-029",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "against"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "through"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-11-016",
+      "weight": 3,
+      "terms": [
+        "against",
+        "many",
+        "transgress"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "mind"
+      ]
+    },
+    {
+      "from": "med-07-016",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-08-019",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-08-032",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-08-048",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-09-001",
+      "weight": 1,
+      "terms": [
+        "feareth"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "rather"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-07-026",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-07-037",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-08-006",
+      "weight": 1,
+      "terms": [
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-08-039",
+      "weight": 1,
+      "terms": [
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-08-048",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-09-007",
+      "weight": 2,
+      "terms": [
+        "creatures",
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "subject"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-11-001",
+      "weight": 2,
+      "terms": [
+        "creatures",
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-07-030",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-07-039",
+      "weight": 1,
+      "terms": [
+        "cross"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-10-036",
+      "weight": 2,
+      "terms": [
+        "calamity",
+        "virtuous"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "changed"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-07-031",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "changing"
+      ]
+    },
+    {
+      "from": "med-07-037",
+      "to": "med-08-048",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-037",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-037",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-07-039",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "pampered"
+      ]
+    },
+    {
+      "from": "med-08-001",
+      "to": "med-08-045",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-08-001",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-08-001",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "hast"
+      ]
+    },
+    {
+      "from": "med-08-001",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "truly"
+      ]
+    },
+    {
+      "from": "med-08-001",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "truly"
+      ]
+    },
+    {
+      "from": "med-08-001",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "hast"
+      ]
+    },
+    {
+      "from": "med-08-006",
+      "to": "med-08-032",
+      "weight": 2,
+      "terms": [
+        "part",
+        "together"
+      ]
+    },
+    {
+      "from": "med-08-006",
+      "to": "med-08-039",
+      "weight": 2,
+      "terms": [
+        "hindered",
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-08-006",
+      "to": "med-09-007",
+      "weight": 2,
+      "terms": [
+        "reasonable",
+        "together"
+      ]
+    },
+    {
+      "from": "med-08-006",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-08-006",
+      "to": "med-10-034",
+      "weight": 1,
+      "terms": [
+        "everything"
+      ]
+    },
+    {
+      "from": "med-08-006",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "worse"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "worse"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-10-036",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "corner"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "upwards"
+      ]
+    },
+    {
+      "from": "med-08-019",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-08-032",
+      "to": "med-08-048",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-08-032",
+      "to": "med-09-007",
+      "weight": 2,
+      "terms": [
+        "together",
+        "unity"
+      ]
+    },
+    {
+      "from": "med-08-032",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "part"
+      ]
+    },
+    {
+      "from": "med-08-032",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "divided"
+      ]
+    },
+    {
+      "from": "med-08-032",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-08-032",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "ordered"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-09-007",
+      "weight": 1,
+      "terms": [
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "power"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "didst"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "properly"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "power"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-11-031",
+      "weight": 2,
+      "terms": [
+        "reasonable",
+        "reservation"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "evil"
+      ]
+    },
+    {
+      "from": "med-08-039",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "tyrant"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-09-003",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-09-040",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-09-043",
+      "weight": 2,
+      "terms": [
+        "fault",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "nothing"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-11-016",
+      "weight": 2,
+      "terms": [
+        "doest",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-12-001",
+      "weight": 3,
+      "terms": [
+        "doest",
+        "thine",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-08-045",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-08-048",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-08-048",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "place"
+      ]
+    },
+    {
+      "from": "med-08-048",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "corrupted"
+      ]
+    },
+    {
+      "from": "med-08-048",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-09-001",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "against"
+      ]
+    },
+    {
+      "from": "med-09-001",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "universe"
+      ]
+    },
+    {
+      "from": "med-09-001",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "according"
+      ]
+    },
+    {
+      "from": "med-09-001",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "indifferent"
+      ]
+    },
+    {
+      "from": "med-09-001",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "against"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-09-040",
+      "weight": 2,
+      "terms": [
+        "mayst",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-09-043",
+      "weight": 2,
+      "terms": [
+        "dost",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-10-008",
+      "weight": 4,
+      "terms": [
+        "same",
+        "shalt",
+        "thou",
+        "wise"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-10-036",
+      "weight": 2,
+      "terms": [
+        "death",
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "bear"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-12-001",
+      "weight": 2,
+      "terms": [
+        "shalt",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-09-003",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-09-007",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "fire"
+      ]
+    },
+    {
+      "from": "med-09-007",
+      "to": "med-11-001",
+      "weight": 1,
+      "terms": [
+        "creatures"
+      ]
+    },
+    {
+      "from": "med-09-007",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "excellent"
+      ]
+    },
+    {
+      "from": "med-09-007",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "fire"
+      ]
+    },
+    {
+      "from": "med-09-007",
+      "to": "med-11-031",
+      "weight": 1,
+      "terms": [
+        "reasonable"
+      ]
+    },
+    {
+      "from": "med-09-007",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "whatsoever"
+      ]
+    },
+    {
+      "from": "med-09-029",
+      "to": "med-10-006",
+      "weight": 1,
+      "terms": [
+        "cause"
+      ]
+    },
+    {
+      "from": "med-09-029",
+      "to": "med-10-007",
+      "weight": 2,
+      "terms": [
+        "different",
+        "whereof"
+      ]
+    },
+    {
+      "from": "med-09-029",
+      "to": "med-10-034",
+      "weight": 1,
+      "terms": [
+        "while"
+      ]
+    },
+    {
+      "from": "med-09-029",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-09-029",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-09-043",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-10-008",
+      "weight": 2,
+      "terms": [
+        "distractions",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "liberty"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-11-015",
+      "weight": 1,
+      "terms": [
+        "power"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-040",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "gods"
+      ]
+    },
+    {
+      "from": "med-09-043",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-043",
+      "to": "med-10-033",
+      "weight": 3,
+      "terms": [
+        "done",
+        "whosoever",
+        "worse"
+      ]
+    },
+    {
+      "from": "med-09-043",
+      "to": "med-11-016",
+      "weight": 3,
+      "terms": [
+        "against",
+        "meekness",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-09-043",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-10-006",
+      "to": "med-10-007",
+      "weight": 1,
+      "terms": [
+        "parts"
+      ]
+    },
+    {
+      "from": "med-10-006",
+      "to": "med-10-033",
+      "weight": 1,
+      "terms": [
+        "hurtful"
+      ]
+    },
+    {
+      "from": "med-10-007",
+      "to": "med-10-008",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-10-007",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-10-008",
+      "to": "med-10-036",
+      "weight": 2,
+      "terms": [
+        "continue",
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-10-008",
+      "to": "med-11-005",
+      "weight": 1,
+      "terms": [
+        "same"
+      ]
+    },
+    {
+      "from": "med-10-008",
+      "to": "med-11-016",
+      "weight": 1,
+      "terms": [
+        "thou"
+      ]
+    },
+    {
+      "from": "med-10-008",
+      "to": "med-12-001",
+      "weight": 2,
+      "terms": [
+        "shalt",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-10-008",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-10-008",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "hast"
+      ]
+    },
+    {
+      "from": "med-10-033",
+      "to": "med-11-018",
+      "weight": 1,
+      "terms": [
+        "fire"
+      ]
+    },
+    {
+      "from": "med-10-033",
+      "to": "med-12-017",
+      "weight": 2,
+      "terms": [
+        "neither",
+        "truly"
+      ]
+    },
+    {
+      "from": "med-10-033",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "city"
+      ]
+    },
+    {
+      "from": "med-10-036",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-10-036",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "shalt"
+      ]
+    },
+    {
+      "from": "med-10-036",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "death"
+      ]
+    },
+    {
+      "from": "med-11-001",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "herself"
+      ]
+    },
+    {
+      "from": "med-11-005",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "stage"
+      ]
+    },
+    {
+      "from": "med-11-015",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-11-015",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "thine"
+      ]
+    },
+    {
+      "from": "med-11-015",
+      "to": "med-12-004",
+      "weight": 1,
+      "terms": [
+        "seeking"
+      ]
+    },
+    {
+      "from": "med-11-016",
+      "to": "med-12-001",
+      "weight": 2,
+      "terms": [
+        "doest",
+        "thou"
+      ]
+    },
+    {
+      "from": "med-11-016",
+      "to": "med-12-027",
+      "weight": 1,
+      "terms": [
+        "many"
+      ]
+    },
+    {
+      "from": "med-11-018",
+      "to": "med-12-001",
+      "weight": 1,
+      "terms": [
+        "providence"
+      ]
+    },
+    {
+      "from": "med-11-018",
+      "to": "med-12-017",
+      "weight": 1,
+      "terms": [
+        "providence"
+      ]
+    },
+    {
+      "from": "med-11-031",
+      "to": "med-12-002",
+      "weight": 1,
+      "terms": [
+        "always"
+      ]
+    },
+    {
+      "from": "med-12-001",
+      "to": "med-12-002",
+      "weight": 2,
+      "terms": [
+        "shalt",
+        "thine"
+      ]
+    },
+    {
+      "from": "med-12-001",
+      "to": "med-12-017",
+      "weight": 2,
+      "terms": [
+        "divine",
+        "providence"
+      ]
+    }
+  ]
+}
