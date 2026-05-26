@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note Graph — Federalist Papers</title>
+
+<!--
+  Fruchterman–Reingold force layout via d3 v7.
+
+  The algorithm is named for Fruchterman & Reingold (1991).
+  In d3's vocabulary the same physics appears as:
+    - d3.forceManyBody()  = node-node repulsion (like-charges pushing apart)
+    - d3.forceLink()      = spring forces along edges (connected nodes attract)
+    - d3.forceCenter()    = weak gravity pulling all nodes toward canvas center
+
+  Gephi calls these "Repulsion strength", "Optimal distance", and "Gravity".
+  Different vocabulary; same numerical model.
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+
+<style>
+  /* ---- BASE / DARK MODE ---- */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f0f12;
+    --surface:   #1a1a22;
+    --border:    #2e2e3e;
+    --text:      #d0d0e0;
+    --muted:     #6a6a8a;
+    --accent:    #7a7fff;
+    --edge:      #3a3a5a;
+    --edge-hi:   #9090ff;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px; overflow: hidden;
+  }
+
+  /* ---- LAYOUT ---- */
+  #app { display: flex; width: 100%; height: 100vh; }
+
+  #canvas-wrap {
+    flex: 1; position: relative; overflow: hidden;
+  }
+
+  svg#graph {
+    width: 100%; height: 100%;
+    background: var(--bg);
+  }
+
+  /* ---- CONTROLS (top-left) ---- */
+  #controls {
+    position: absolute; top: 12px; left: 12px; z-index: 20;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  #search {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); padding: 6px 10px; border-radius: 6px;
+    width: 260px; outline: none; font-size: 13px;
+  }
+  #search:focus { border-color: var(--accent); }
+
+  /* ---- FR SLIDERS (collapsible) ---- */
+  #fr-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 12px; width: 260px;
+  }
+  #fr-panel summary {
+    cursor: pointer; font-size: 12px; color: var(--muted);
+    user-select: none; list-style: none;
+  }
+  #fr-panel summary::-webkit-details-marker { display: none; }
+  #fr-panel summary::before { content: "▸ "; }
+  #fr-panel[open] summary::before { content: "▾ "; }
+
+  .slider-row {
+    display: flex; flex-direction: column; gap: 3px;
+    margin-top: 8px; font-size: 12px; color: var(--muted);
+  }
+  .slider-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .slider-header label { }
+  .slider-header span  { color: var(--text); font-variant-numeric: tabular-nums; }
+  .slider-row input[type=range] { width: 100%; accent-color: var(--accent); }
+
+  #reset-btn {
+    margin-top: 8px; width: 100%; padding: 4px 0;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); border-radius: 4px; cursor: pointer;
+    font-size: 12px;
+  }
+  #reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  #layout-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  #layout-row label {
+    font-size: 12px; color: var(--muted); white-space: nowrap;
+  }
+  #layout-select {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); padding: 4px 6px; border-radius: 4px;
+    font-size: 12px; cursor: pointer; outline: none;
+  }
+  #layout-select:focus { border-color: var(--accent); }
+
+  #reload-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  #reload-btn, #play-btn {
+    padding: 5px 10px; background: none;
+    border: 1px solid var(--border); color: var(--muted);
+    border-radius: 4px; cursor: pointer; font-size: 12px;
+    white-space: nowrap;
+  }
+  #reload-btn:hover, #play-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #play-btn.running { border-color: var(--accent); color: var(--accent); }
+  #reload-btn.spinning { animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #reload-status {
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* ---- EDGE TOOLTIP ---- */
+  #tooltip {
+    position: fixed; pointer-events: none;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 12px; font-size: 12px;
+    max-width: 260px; line-height: 1.5;
+    display: none; z-index: 30;
+  }
+
+  /* ---- SIDE PANEL (note detail) ---- */
+  #side-panel {
+    width: 320px; min-width: 260px;
+    background: var(--surface); border-left: 1px solid var(--border);
+    padding: 16px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: width 0.2s;
+  }
+  #side-panel.hidden { width: 0; min-width: 0; padding: 0; overflow: hidden; }
+
+  #panel-close {
+    align-self: flex-end; background: none; border: none;
+    color: var(--muted); font-size: 18px; cursor: pointer; line-height: 1;
+  }
+  #panel-close:hover { color: var(--text); }
+
+  #panel-meta {
+    font-size: 12px; color: var(--muted); line-height: 1.7;
+    border-bottom: 1px solid var(--border); padding-bottom: 10px;
+  }
+  #panel-meta strong { color: var(--text); }
+
+  #panel-body {
+    font-size: 13px; line-height: 1.7; color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  #panel-error { font-size: 12px; color: #f06060; }
+
+  /* ---- FILE:// WARNING ---- */
+  #file-warning {
+    position: absolute; bottom: 10px; left: 12px; z-index: 20;
+    background: #2a1a10; border: 1px solid #6a3a10;
+    border-radius: 6px; padding: 8px 12px; font-size: 12px;
+    max-width: 340px; display: none;
+  }
+  #file-warning a { color: var(--accent); }
+
+  /* ---- SVG ELEMENTS ---- */
+  .node circle {
+    stroke-width: 1.5px; cursor: grab; transition: opacity 0.15s;
+  }
+  .node circle:active { cursor: grabbing; }
+  .node.dimmed circle { opacity: 0.2; }
+  .node.highlighted circle { stroke: #fff !important; stroke-width: 2.5px; }
+
+  .node text {
+    font-size: 10px; fill: var(--text); pointer-events: none;
+    text-anchor: middle; dominant-baseline: central;
+    paint-order: stroke;
+    stroke: var(--bg); stroke-width: 3px;
+  }
+
+  .link {
+    stroke: var(--edge); stroke-linecap: round;
+    transition: stroke 0.15s, opacity 0.15s;
+    cursor: pointer;
+  }
+  .link.dimmed { opacity: 0.08; }
+  .link.highlighted { stroke: var(--edge-hi) !important; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- ---- GRAPH CANVAS ---- -->
+  <div id="canvas-wrap">
+    <svg id="graph"></svg>
+
+    <!-- Top-left controls -->
+    <div id="controls">
+      <input id="search" type="search" placeholder="Search nodes…" autocomplete="off">
+
+      <details id="fr-panel">
+        <summary>Force parameters</summary>
+
+        <!-- charge = d3.forceManyBody strength; negative = repulsion -->
+        <div class="slider-row">
+          <div class="slider-header">
+            <label>Charge</label><span id="lbl-charge">-200</span>
+          </div>
+          <input type="range" id="sl-charge" min="-600" max="-20" step="10" value="-200">
+        </div>
+
+        <!-- link distance = d3.forceLink distance; like FR optimal distance -->
+        <div class="slider-row">
+          <div class="slider-header">
+            <label>Link dist</label><span id="lbl-dist">90</span>
+          </div>
+          <input type="range" id="sl-dist" min="20" max="300" step="10" value="90">
+        </div>
+
+        <!-- alpha decay controls how fast the simulation "cools" and stops -->
+        <div class="slider-row">
+          <div class="slider-header">
+            <label>Alpha decay</label><span id="lbl-alpha">0.020</span>
+          </div>
+          <input type="range" id="sl-alpha" min="0.005" max="0.08" step="0.005" value="0.02">
+        </div>
+
+        <button id="reset-btn">Reset defaults</button>
+      </details>
+
+      <!-- Layout picker -->
+      <div id="layout-row">
+        <label for="layout-select">Layout</label>
+        <select id="layout-select">
+          <option value="force">Force (FR)</option>
+          <option value="circular">Circular</option>
+          <option value="concentric">Concentric</option>
+          <option value="radial">Radial</option>
+          <option value="grid">Grid</option>
+          <option value="bipartite">Bipartite</option>
+          <option value="clustered">Clustered</option>
+          <option value="kk">Kamada-Kawai</option>
+          <option value="spectral">Spectral</option>
+          <option value="spiral">Spiral</option>
+          <option value="linear">Linear</option>
+          <option value="random">Random</option>
+        </select>
+      </div>
+
+      <!-- Simulation play/stop + reload -->
+      <div id="reload-row">
+        <button id="play-btn" title="Pause simulation">⏸</button>
+        <button id="reload-btn" title="Re-fetch graph.json and re-render">↺ Reload</button>
+        <span id="reload-status"></span>
+      </div>
+    </div>
+
+    <!-- Edge hover tooltip -->
+    <div id="tooltip"></div>
+
+    <!-- file:// fetch warning (shown dynamically) -->
+    <div id="file-warning">
+      ⚠ <strong>file:// detected.</strong> Click a node to read its .md body
+      requires a local server.<br>
+      Run: <code>python -m http.server 8765</code> from repo root, then open
+      <a href="http://localhost:8765/viz/graph.html">localhost:8765/viz/graph.html</a>.
+    </div>
+  </div>
+
+  <!-- ---- NOTE SIDE PANEL ---- -->
+  <div id="side-panel" class="hidden">
+    <button id="panel-close" title="Close">×</button>
+    <div id="panel-meta"></div>
+    <div id="panel-body"></div>
+    <div id="panel-error"></div>
+  </div>
+</div>
+
+<!--
+  NOTE (V1 behaviour):
+  If you replace the demo corpus with personal notes, graph.json and the .md
+  files expose note titles and keyword pairs in plain text. Keep data/ out of
+  version control (it is gitignored by default) and do not publish the viewer
+  pointing at private content without authentication.
+-->
+
+<script>
+"use strict";
+
+// ---- DEFAULTS (also used by reset button) ----
+const DEFAULTS = {
+  charge: -200,   // d3.forceManyBody strength — negative = repulsion
+  dist:    90,    // d3.forceLink distance — like FR "optimal distance"
+  alpha:   0.02,  // simulation.alphaDecay — cooling rate; lower = longer simulation
+};
+
+// ---- PALETTE ----
+// d3.schemeTableau10: 10 visually distinct categorical colours
+const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+// ---- STATE ----
+let simulation, linkSel, nodeSel, currentParams = { ...DEFAULTS };
+let currentLinks = [];   // edge objects with resolved source/target; needed by KK layout
+let currentLayout = "force"; // tracks active layout so reload can re-apply it
+
+// ---- SVG SETUP ----
+const svg    = d3.select("#graph");
+const width  = () => svg.node().clientWidth;
+const height = () => svg.node().clientHeight;
+
+// g = the zoomable group that contains all graph elements
+const g = svg.append("g");
+
+// d3.zoom: enables mouse-wheel zoom and drag-to-pan on the SVG
+svg.call(
+  d3.zoom()
+    .scaleExtent([0.1, 8])
+    .on("zoom", (event) => g.attr("transform", event.transform))
+);
+
+// ---- FETCH + RELOAD ----
+const GRAPH_URL    = "../data/graph.json";
+let   lastModified = null;   // tracks Last-Modified header for change detection
+
+// loadGraph: fetch graph.json and re-render. Preserves node positions across reloads.
+function loadGraph(showSpinner = false) {
+  const btn = document.getElementById("reload-btn");
+  const lbl = document.getElementById("reload-status");
+  if (showSpinner) btn.classList.add("spinning");
+
+  // Save current node positions by id so layout survives a reload
+  const savedPos = {};
+  if (simulation) {
+    simulation.nodes().forEach(n => { savedPos[n.id] = { x: n.x, y: n.y }; });
+    simulation.stop();
+  }
+
+  fetch(GRAPH_URL)
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      // Cache the Last-Modified header for the auto-poll comparison
+      lastModified = r.headers.get("Last-Modified");
+      return r.json();
+    })
+    .then(data => {
+      g.selectAll("*").remove();   // clear previous graph elements
+      buildGraph(data, savedPos);
+      setSimRunning(currentLayout === "force");
+      if (currentLayout !== "force") applyLayout(currentLayout);
+      const ts = new Date().toLocaleTimeString();
+      lbl.textContent = `updated ${ts}`;
+    })
+    .catch(err => {
+      g.selectAll("*").remove();
+      g.append("text")
+        .attr("x", 20).attr("y", 40)
+        .attr("fill", "#f06060").attr("font-size", "14px")
+        .text(`Could not load graph.json: ${err.message}. Run build_graph.py first.`);
+      lbl.textContent = "load failed";
+    })
+    .finally(() => btn.classList.remove("spinning"));
+}
+
+// Auto-poll: HEAD request every 3 s; re-render only if Last-Modified changed.
+// HEAD fetches only headers (no body) — very lightweight.
+function startPoll() {
+  setInterval(() => {
+    fetch(GRAPH_URL, { method: "HEAD" })
+      .then(r => {
+        const lm = r.headers.get("Last-Modified");
+        if (lm && lm !== lastModified) loadGraph();
+      })
+      .catch(() => {});   // silently ignore poll failures
+  }, 3000);
+}
+
+// Initial load + start polling
+loadGraph();
+startPoll();
+
+document.getElementById("reload-btn").addEventListener("click", () => loadGraph(true));
+
+// ---- GRAPH BUILD ----
+function buildGraph(data, savedPos = {}) {
+  const nodes = data.nodes.map(d => {
+    // Restore saved position if this node existed before; prevents full layout reset
+    const pos = savedPos[d.id];
+    return pos ? { ...d, x: pos.x, y: pos.y } : { ...d };
+  });
+  // d3.forceLink requires source/target; our JSON uses from/to (note-networks convention)
+  const links = data.edges.map(d => ({ ...d, source: d.from, target: d.to }));
+  currentLinks = links;  // stored for layouts that need topology (e.g. Kamada-Kawai)
+
+  // ---- FORCE SIMULATION ----
+  // Fruchterman–Reingold physics in d3 vocabulary:
+  //   forceManyBody  = node-node repulsion (negative charge)
+  //   forceLink      = spring attraction along edges
+  //   forceCenter    = gravity toward canvas centre
+  //   forceCollide   = prevent node overlap (not in FR original, but helpful)
+  simulation = d3.forceSimulation(nodes)
+    .force("charge", d3.forceManyBody().strength(currentParams.charge))
+    .force("link",   d3.forceLink(links)
+                       .id(d => d.id)
+                       .distance(currentParams.dist))
+    .force("center", d3.forceCenter(width() / 2, height() / 2))
+    .force("collide", d3.forceCollide(d => nodeRadius(d) + 4))
+    .alphaDecay(currentParams.alpha)
+    .on("tick", ticked)
+    .on("end",  () => setSimRunning(false));  // auto-update button when sim cools
+
+  // ---- LINKS ----
+  linkSel = g.append("g").attr("class", "links")
+    .selectAll("line")
+    .data(links)
+    .join("line")
+      .attr("class", "link")
+      // Edge thickness scales with shared-term weight
+      .attr("stroke-width", d => Math.max(1, Math.sqrt(d.weight)))
+      .on("mouseover", showEdgeTip)
+      .on("mousemove", moveEdgeTip)
+      .on("mouseout",  hideEdgeTip);
+
+  // ---- NODES ----
+  nodeSel = g.append("g").attr("class", "nodes")
+    .selectAll("g")
+    .data(nodes)
+    .join("g")
+      .attr("class", "node")
+      .call(d3.drag()
+        .on("start", dragStart)
+        .on("drag",  dragged)
+        .on("end",   dragEnd))
+      .on("click", nodeClick);
+
+  nodeSel.append("circle")
+    .attr("r",    d => nodeRadius(d))
+    // Node colour keyed on speaker field (categorical)
+    .attr("fill", d => color(d.speaker || "UNKNOWN"))
+    .attr("stroke", d => d3.color(color(d.speaker || "UNKNOWN")).darker(0.8));
+
+  // Label: "F42 · commerce" — paper number + SCOTUS citation term
+  nodeSel.append("text")
+    .text(d => shortLabel(d));
+}
+
+// ---- NODE RADIUS ---- scales with degree centrality (number of edges)
+// degree = graph-structural importance; largest node = most-connected hub
+function nodeRadius(d) {
+  const deg = d.degree || 1;
+  return Math.max(6, Math.min(28, 5 + Math.sqrt(deg) * 3.5));
+}
+
+// SCOTUS citation context term per paper.
+// Federalist papers: term reflects the constitutional doctrine SCOTUS most
+// often cites that paper for.  AF papers: term reflects the core warning.
+const SCOTUS_TERM = {
+  // Federalist
+  "fed-001": "framing",    "fed-002": "union",       "fed-003": "foreign",
+  "fed-009": "confederacy","fed-010": "faction",      "fed-011": "trade",
+  "fed-014": "territory",  "fed-015": "articles",    "fed-016": "coercion",
+  "fed-017": "states",     "fed-022": "ratification","fed-023": "defense",
+  "fed-027": "supremacy",  "fed-029": "militia",     "fed-032": "taxation",
+  "fed-033": "necessary",  "fed-037": "convention",  "fed-038": "objections",
+  "fed-039": "republic",   "fed-040": "authority",   "fed-041": "welfare",
+  "fed-042": "commerce",   "fed-043": "amendment",   "fed-044": "implied",
+  "fed-045": "reserved",   "fed-046": "resistance",  "fed-047": "separation",
+  "fed-048": "encroachment","fed-049":"stability",   "fed-051": "checks",
+  "fed-052": "elections",  "fed-057": "suffrage",    "fed-062": "senate",
+  "fed-063": "continuity", "fed-064": "treaties",    "fed-065": "impeachment",
+  "fed-066": "trial",      "fed-067": "inventory",   "fed-068": "electors",
+  "fed-069": "executive",  "fed-070": "unity",       "fed-071": "duration",
+  "fed-072": "reeligible", "fed-073": "veto",        "fed-074": "pardons",
+  "fed-075": "treaty",     "fed-076": "appointment", "fed-077": "confirm",
+  "fed-078": "judiciary",  "fed-079": "salaries",    "fed-080": "jurisdiction",
+  "fed-081": "appellate",  "fed-082": "concurrent",  "fed-083": "jury",
+  "fed-084": "rights",     "fed-085": "ratification",
+  // Anti-Federalist
+  "af-brutus-01":         "unlimited",
+  "af-brutus-06":         "expansion",
+  "af-brutus-11":         "supremacy",
+  "af-brutus-12":         "unaccountable",
+  "af-brutus-15":         "jurisdiction",
+  "af-federal-farmer-01": "consolidation",
+  "af-federal-farmer-02": "thin-rep",
+  "af-federal-farmer-06": "rights",
+  "af-centinel-01":       "aristocracy",
+  "af-cato-03":           "virtue",
+  "af-cato-05":           "patronage",
+};
+
+// Short display codes for Anti-Federalist papers.
+// Format: "B11 · supremacy", "FF6 · rights", "Ca5 · patronage"
+const AF_SHORT = {
+  "af-brutus-01":         "B1",
+  "af-brutus-06":         "B6",
+  "af-brutus-11":         "B11",
+  "af-brutus-12":         "B12",
+  "af-brutus-15":         "B15",
+  "af-federal-farmer-01": "FF1",
+  "af-federal-farmer-02": "FF2",
+  "af-federal-farmer-06": "FF6",
+  "af-centinel-01":       "Cen1",
+  "af-cato-03":           "Ca3",
+  "af-cato-05":           "Ca5",
+};
+
+function shortLabel(d) {
+  // Federalist: "F42 · commerce"
+  const fm = d.id.match(/^fed-0*(\d+)/);
+  if (fm) {
+    const term = SCOTUS_TERM[d.id];
+    return term ? `F${fm[1]} · ${term}` : `F${fm[1]}`;
+  }
+  // Anti-Federalist: "B11 · supremacy"
+  const short = AF_SHORT[d.id];
+  if (short) {
+    const term = SCOTUS_TERM[d.id];
+    return term ? `${short} · ${term}` : short;
+  }
+  return d.id;
+}
+
+// ---- SIMULATION TICK ---- updates DOM positions each physics step
+function ticked() {
+  linkSel
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
+}
+
+// ---- DRAG HANDLERS ----
+// dragMoved tracks whether the pointer actually moved during the gesture.
+// A bare click fires start→end with no drag events; we must not reheat the
+// simulation or release fx/fy in that case, or the node flies off.
+let dragMoved = false;
+
+function dragStart(event, d) {
+  dragMoved = false;
+  // Do NOT reheat yet — wait for the first drag move to confirm intent.
+}
+function dragged(event, d) {
+  if (!dragMoved) {
+    // First actual movement: fix position and reheat simulation.
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x; d.fy = d.y;
+    dragMoved = true;
+  }
+  d.fx = event.x; d.fy = event.y;
+}
+function dragEnd(event, d) {
+  if (!dragMoved) return;   // pure click — leave node and simulation untouched
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;  // release fixed position; node drifts again
+}
+
+// ---- EDGE TOOLTIP ----
+const tip = document.getElementById("tooltip");
+
+function showEdgeTip(event, d) {
+  const terms = (d.terms || []).join(", ") || "(no terms)";
+  tip.innerHTML = `<strong>${d.source.id} ↔ ${d.target.id}</strong><br>
+    Weight: ${d.weight}<br>Shared: ${terms}`;
+  tip.style.display = "block";
+  moveEdgeTip(event);
+}
+function moveEdgeTip(event) {
+  tip.style.left = (event.clientX + 14) + "px";
+  tip.style.top  = (event.clientY - 10) + "px";
+}
+function hideEdgeTip() { tip.style.display = "none"; }
+
+// ---- NODE CLICK → SIDE PANEL ----
+function nodeClick(event, d) {
+  event.stopPropagation();
+
+  // Highlight clicked node and its neighbours
+  const neighbourIds = new Set(
+    (linkSel.data()
+      .filter(l => l.source.id === d.id || l.target.id === d.id)
+      .flatMap(l => [l.source.id, l.target.id])
+    )
+  );
+  nodeSel.classed("dimmed",      n => !neighbourIds.has(n.id) && n.id !== d.id);
+  nodeSel.classed("highlighted", n => n.id === d.id);
+  linkSel.classed("dimmed",      l => l.source.id !== d.id && l.target.id !== d.id);
+  linkSel.classed("highlighted", l => l.source.id === d.id || l.target.id === d.id);
+
+  showPanel(d);
+}
+
+// Clear highlighting when clicking empty canvas
+svg.on("click", () => {
+  nodeSel?.classed("dimmed highlighted", false);
+  linkSel?.classed("dimmed highlighted", false);
+  closePanel();
+});
+
+// ---- SIDE PANEL ----
+const panel     = document.getElementById("side-panel");
+const panelMeta = document.getElementById("panel-meta");
+const panelBody = document.getElementById("panel-body");
+const panelErr  = document.getElementById("panel-error");
+document.getElementById("panel-close").onclick = () => {
+  closePanel();
+  nodeSel?.classed("dimmed highlighted", false);
+  linkSel?.classed("dimmed highlighted", false);
+};
+
+function closePanel() { panel.classList.add("hidden"); }
+
+function showPanel(d) {
+  panel.classList.remove("hidden");
+  panelErr.textContent = "";
+  panelBody.textContent = "Loading…";
+
+  // Render frontmatter fields
+  const tags = Array.isArray(d.tags) ? d.tags.join(", ") : (d.tags || "");
+  panelMeta.innerHTML = `
+    <strong>${d.id}</strong><br>
+    Speaker: <strong>${d.speaker || "—"}</strong><br>
+    Source: ${d.source || d.episode || "—"}<br>
+    Words: ${d.word_count || "—"} &nbsp;·&nbsp; Connections: ${d.degree || 0}<br>
+    Tags: ${tags || "—"}
+  `;
+
+  // Attempt to fetch the .md file for the note body
+  // Works on localhost; blocked by browser under file:// due to CORS.
+  const mdPath = `../notes/${d.id}`;
+  // Try both with and without extension glob — find the actual filename
+  fetchNoteBody(d.id);
+}
+
+function fetchNoteBody(noteId) {
+  // The filename has a slug appended: we can't know it without listing the dir.
+  // Workaround: we stored it in graph.json as "label" which equals the file stem.
+  // Fetch by stem — the server returns 404 for exact path; we need the full filename.
+  // Strategy: fetch the graph JSON again to get the stored label, then construct path.
+  // Simpler approach: embed the filename in graph.json "file" field. But we don't yet.
+  // Current approach: try to guess by fetching /notes/{id}* which requires server-side
+  // directory listing. Instead, embed note body directly when building graph.json.
+  // For now: load text from the node's `body` if pre-embedded, else show a message.
+  const node = simulation ? simulation.nodes().find(n => n.id === noteId) : null;
+  if (node && node._body) {
+    panelBody.textContent = node._body;
+    return;
+  }
+
+  // Try a direct fetch — works under http://localhost, not under file://
+  const isFileProtocol = window.location.protocol === "file:";
+  if (isFileProtocol) {
+    document.getElementById("file-warning").style.display = "block";
+    panelBody.textContent = "";
+    panelErr.textContent  = "Run via localhost to read note bodies (see warning below).";
+    return;
+  }
+
+  // List notes directory to find the matching filename
+  fetch("../notes/")
+    .then(r => r.text())
+    .then(html => {
+      // Parse directory listing for files starting with noteId
+      const re    = new RegExp(`href="([^"]*${noteId}[^"]*\\.md)"`, "i");
+      const match = re.exec(html);
+      if (!match) throw new Error("File not found in directory listing.");
+      return fetch(`../notes/${match[1]}`);
+    })
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.text();
+    })
+    .then(text => {
+      // Strip YAML frontmatter before displaying
+      panelBody.textContent = text.replace(/^---\n[\s\S]*?\n---\n\n?/, "");
+    })
+    .catch(err => {
+      panelBody.textContent = "";
+      panelErr.textContent  = `Could not load note: ${err.message}`;
+    });
+}
+
+// ---- SEARCH ----
+document.getElementById("search").addEventListener("input", function() {
+  const q = this.value.trim().toLowerCase();
+  if (!nodeSel) return;
+
+  if (!q) {
+    nodeSel.classed("dimmed highlighted", false);
+    linkSel.classed("dimmed highlighted", false);
+    return;
+  }
+
+  nodeSel.classed("dimmed",      d => !d.id.toLowerCase().includes(q));
+  nodeSel.classed("highlighted", d =>  d.id.toLowerCase().includes(q));
+  linkSel.classed("dimmed", true);
+});
+
+// ---- FR SLIDERS ----
+function bindSlider(sliderId, labelId, paramKey, fmt) {
+  const sl  = document.getElementById(sliderId);
+  const lbl = document.getElementById(labelId);
+
+  sl.addEventListener("input", () => {
+    const v = parseFloat(sl.value);
+    lbl.textContent = fmt(v);
+    currentParams[paramKey] = v;
+    applyParams();
+  });
+}
+
+function applyParams() {
+  if (!simulation) return;
+  simulation
+    .force("charge").strength(currentParams.charge);
+  simulation
+    .force("link").distance(currentParams.dist);
+  simulation
+    .alphaDecay(currentParams.alpha)
+    .alpha(0.5)         // reheat the simulation so changes take effect visibly
+    .restart();
+  setSimRunning(true);
+}
+
+bindSlider("sl-charge", "lbl-charge", "charge", v => v.toFixed(0));
+bindSlider("sl-dist",   "lbl-dist",   "dist",   v => v.toFixed(0));
+bindSlider("sl-alpha",  "lbl-alpha",  "alpha",  v => v.toFixed(3));
+
+document.getElementById("reset-btn").addEventListener("click", () => {
+  currentParams = { ...DEFAULTS };
+  document.getElementById("sl-charge").value = DEFAULTS.charge;
+  document.getElementById("sl-dist").value   = DEFAULTS.dist;
+  document.getElementById("sl-alpha").value  = DEFAULTS.alpha;
+  document.getElementById("lbl-charge").textContent = DEFAULTS.charge;
+  document.getElementById("lbl-dist").textContent   = DEFAULTS.dist;
+  document.getElementById("lbl-alpha").textContent  = DEFAULTS.alpha.toFixed(3);
+  applyParams();
+});
+
+// ============================================================
+// ---- LAYOUT SYSTEM ----
+// ============================================================
+
+// applyPresetLayout: animate nodes from their current positions to new (x, y).
+// positions = [{id, x, y}, ...]. Sets d.fx/d.fy so physics doesn't override.
+function applyPresetLayout(positions) {
+  simulation.stop();
+  const posMap = Object.fromEntries(positions.map(p => [p.id, p]));
+  simulation.nodes().forEach(d => {
+    const p = posMap[d.id];
+    if (!p) return;
+    d.fx = p.x; d.fy = p.y;
+  });
+  // Smooth animated transition to new positions (700 ms ease-cubic)
+  nodeSel.transition().duration(700).ease(d3.easeCubicInOut)
+    .attr("transform", d => `translate(${d.fx ?? d.x},${d.fy ?? d.y})`);
+  linkSel.transition().duration(700).ease(d3.easeCubicInOut)
+    .attr("x1", d => d.source.fx ?? d.source.x)
+    .attr("y1", d => d.source.fy ?? d.source.y)
+    .attr("x2", d => d.target.fx ?? d.target.x)
+    .attr("y2", d => d.target.fy ?? d.target.y);
+}
+
+function applyLayout(name) {
+  currentLayout = name;
+  document.getElementById("layout-select").value = name;
+  ({
+    force:      layoutForce,
+    circular:   layoutCircular,
+    concentric: layoutConcentric,
+    radial:     layoutRadial,
+    grid:       layoutGrid,
+    bipartite:  layoutBipartite,
+    clustered:  layoutClustered,
+    kk:         layoutKK,
+    spectral:   layoutSpectral,
+    spiral:     layoutSpiral,
+    linear:     layoutLinear,
+    random:     layoutRandom,
+  }[name] ?? layoutForce)();
+}
+
+document.getElementById("layout-select").addEventListener("change", function() {
+  applyLayout(this.value);
+});
+
+// ---- 1. FORCE (Fruchterman-Reingold) ----
+function layoutForce() {
+  // Release all fixed positions and reheat the physics simulation
+  simulation.nodes().forEach(d => { d.fx = null; d.fy = null; });
+  simulation.alpha(0.8).restart();
+  setSimRunning(true);
+}
+
+// ---- 2. CIRCULAR ----
+// Nodes evenly spaced on a single ring, sorted descending by degree (hub at top)
+function layoutCircular() {
+  const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
+  const cx = width() / 2, cy = height() / 2;
+  const r  = Math.min(width(), height()) * 0.38;
+  applyPresetLayout(nodes.map((d, i) => {
+    const angle = (2 * Math.PI * i / nodes.length) - Math.PI / 2;
+    return { id: d.id, x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+  }));
+}
+
+// ---- 3. CONCENTRIC ----
+// Three nested rings: top-20% degree (inner), mid-40% (middle), rest (outer)
+function layoutConcentric() {
+  const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
+  const cx = width() / 2, cy = height() / 2;
+  const minD = Math.min(width(), height());
+  const radii = [0.14, 0.27, 0.41].map(f => f * minD); // ring radii
+  const n = nodes.length;
+  const cuts = [Math.ceil(n * 0.2), Math.ceil(n * 0.55), n]; // ring sizes
+  const positions = [];
+  let start = 0;
+  radii.forEach((r, ri) => {
+    const group = nodes.slice(start, cuts[ri]);
+    group.forEach((d, i) => {
+      const angle = (2 * Math.PI * i / group.length) - Math.PI / 2;
+      positions.push({ id: d.id, x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
+    });
+    start = cuts[ri];
+  });
+  applyPresetLayout(positions);
+}
+
+// ---- 4. RADIAL ----
+// Distance from center inversely proportional to degree — hubs cluster at core
+function layoutRadial() {
+  const nodes = simulation.nodes();
+  const cx = width() / 2, cy = height() / 2;
+  const maxDeg = Math.max(...nodes.map(d => d.degree || 1));
+  const maxR   = Math.min(width(), height()) * 0.43;
+  applyPresetLayout(nodes.map((d, i) => {
+    const r     = maxR * (1 - (d.degree || 1) / (maxDeg + 1));
+    const angle = (2 * Math.PI * i / nodes.length);
+    return { id: d.id, x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+  }));
+}
+
+// ---- 5. GRID ----
+// Rectangular grid, high-degree nodes top-left, reading order
+function layoutGrid() {
+  const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
+  const cols  = Math.ceil(Math.sqrt(nodes.length));
+  const cellW = Math.min(width()  * 0.85, 800) / cols;
+  const cellH = Math.min(height() * 0.85, 600) / Math.ceil(nodes.length / cols);
+  const offX  = (width()  - cols * cellW) / 2 + cellW / 2;
+  const offY  = (height() - Math.ceil(nodes.length / cols) * cellH) / 2 + cellH / 2;
+  applyPresetLayout(nodes.map((d, i) => ({
+    id: d.id,
+    x:  offX + (i % cols) * cellW,
+    y:  offY + Math.floor(i / cols) * cellH,
+  })));
+}
+
+// ---- 6. BIPARTITE ----
+// Left column = Federalist authors, right = Anti-Federalist + Reference
+// Separates the debate's two sides visually
+function layoutBipartite() {
+  const FEDERALIST = new Set(["HAMILTON", "MADISON", "JAY"]);
+  const nodes = simulation.nodes();
+  const left  = [...nodes].filter(d =>  FEDERALIST.has(d.speaker)).sort((a,b) => b.degree - a.degree);
+  const right = [...nodes].filter(d => !FEDERALIST.has(d.speaker)).sort((a,b) => b.degree - a.degree);
+  const stepL = height() / (left.length  + 1);
+  const stepR = height() / (right.length + 1);
+  const xL = width() * 0.25, xR = width() * 0.75;
+  applyPresetLayout([
+    ...left.map( (d, i) => ({ id: d.id, x: xL, y: (i + 1) * stepL })),
+    ...right.map((d, i) => ({ id: d.id, x: xR, y: (i + 1) * stepR })),
+  ]);
+}
+
+// ---- 7. CLUSTERED ----
+// One mini-circle per speaker; cluster centres arranged in a larger circle
+function layoutClustered() {
+  const nodes = simulation.nodes();
+  const groups = {};
+  nodes.forEach(d => { (groups[d.speaker] ??= []).push(d); });
+  const speakers = Object.keys(groups);
+  const cx = width() / 2, cy = height() / 2;
+  const outerR  = Math.min(width(), height()) * 0.32;
+  const innerR  = Math.min(width(), height()) * 0.07;
+  const positions = [];
+  speakers.forEach((spk, si) => {
+    const clusterAngle = (2 * Math.PI * si / speakers.length) - Math.PI / 2;
+    const gcx = cx + outerR * Math.cos(clusterAngle);
+    const gcy = cy + outerR * Math.sin(clusterAngle);
+    const members = groups[spk];
+    members.forEach((d, i) => {
+      const a = members.length === 1 ? 0 : (2 * Math.PI * i / members.length);
+      positions.push({ id: d.id, x: gcx + innerR * Math.cos(a), y: gcy + innerR * Math.sin(a) });
+    });
+  });
+  applyPresetLayout(positions);
+}
+
+// ---- 8. KAMADA-KAWAI ----
+// Stress minimization: nodes placed so visual distance ≈ graph-theoretic distance.
+// Uses BFS for shortest paths, then Newton gradient descent to minimize energy.
+// Reference: Kamada & Kawai, "An Algorithm for Drawing General Undirected Graphs" (1989)
+function layoutKK() {
+  const nodes = simulation.nodes();
+  const n = nodes.length;
+  const idToIdx = Object.fromEntries(nodes.map((d, i) => [d.id, i]));
+
+  // BFS shortest paths between all pairs
+  const adj = Array.from({ length: n }, () => []);
+  currentLinks.forEach(l => {
+    const s = idToIdx[l.source.id ?? l.source];
+    const t = idToIdx[l.target.id ?? l.target];
+    if (s !== undefined && t !== undefined) { adj[s].push(t); adj[t].push(s); }
+  });
+  const dist = Array.from({ length: n }, (_, i) => {
+    const d = new Array(n).fill(Infinity); d[i] = 0;
+    const q = [i];
+    for (let qi = 0; qi < q.length; qi++) {
+      const u = q[qi];
+      adj[u].forEach(v => { if (d[v] === Infinity) { d[v] = d[u] + 1; q.push(v); } });
+    }
+    return d;
+  });
+
+  // Replace Infinity (disconnected nodes) with max finite dist + 1
+  const maxD = Math.max(...dist.flat().filter(isFinite));
+  dist.forEach(row => row.forEach((v, j, arr) => { if (!isFinite(v)) arr[j] = maxD + 1; }));
+
+  // Scale factor L: fill most of the canvas
+  const L = Math.min(width(), height()) * 0.7 / (maxD || 1);
+  const K = 1; // global spring constant
+
+  // Initial positions: circular (stable start)
+  const cx = width() / 2, cy = height() / 2, r0 = L * maxD * 0.4;
+  const pos = nodes.map((_, i) => ({
+    x: cx + r0 * Math.cos(2 * Math.PI * i / n),
+    y: cy + r0 * Math.sin(2 * Math.PI * i / n),
+  }));
+
+  // KK energy minimization: 50 outer iterations
+  for (let iter = 0; iter < 50; iter++) {
+    // Find node m with largest gradient magnitude |ΔE_m|
+    let maxGrad = -1, m = 0;
+    for (let i = 0; i < n; i++) {
+      let dx = 0, dy = 0;
+      for (let j = 0; j < n; j++) {
+        if (i === j) continue;
+        const dij  = dist[i][j] * L;
+        const kij  = K / (dist[i][j] * dist[i][j]);
+        const ddx  = pos[i].x - pos[j].x;
+        const ddy  = pos[i].y - pos[j].y;
+        const norm = Math.sqrt(ddx * ddx + ddy * ddy) || 0.001;
+        dx += kij * (ddx - dij * ddx / norm);
+        dy += kij * (ddy - dij * ddy / norm);
+      }
+      const grad = Math.sqrt(dx * dx + dy * dy);
+      if (grad > maxGrad) { maxGrad = grad; m = i; }
+    }
+    if (maxGrad < 0.01) break;
+
+    // Newton step for node m: solve 2×2 system Hm * Δ = -∇Em
+    for (let sub = 0; sub < 5; sub++) {
+      let dEx = 0, dEy = 0, dExx = 0, dEyy = 0, dExy = 0;
+      for (let j = 0; j < n; j++) {
+        if (j === m) continue;
+        const dij  = dist[m][j] * L;
+        const kij  = K / (dist[m][j] * dist[m][j]);
+        const ddx  = pos[m].x - pos[j].x;
+        const ddy  = pos[m].y - pos[j].y;
+        const norm = Math.sqrt(ddx * ddx + ddy * ddy) || 0.001;
+        const norm3 = norm * norm * norm;
+        dEx  += kij * (ddx - dij * ddx / norm);
+        dEy  += kij * (ddy - dij * ddy / norm);
+        dExx += kij * (1 - dij * ddy * ddy / norm3);
+        dEyy += kij * (1 - dij * ddx * ddx / norm3);
+        dExy += kij * (dij * ddx * ddy / norm3);
+      }
+      // 2×2 Cramer's rule: [dExx dExy] [Δx] = [-dEx]
+      //                    [dExy dEyy] [Δy]   [-dEy]
+      const det = dExx * dEyy - dExy * dExy;
+      if (Math.abs(det) < 1e-10) break;
+      pos[m].x -= (dEyy * dEx - dExy * dEy) / det;
+      pos[m].y -= (dExx * dEy - dExy * dEx) / det;
+    }
+  }
+  applyPresetLayout(nodes.map((d, i) => ({ id: d.id, x: pos[i].x, y: pos[i].y })));
+}
+
+// ---- 9. SPECTRAL ----
+// Uses the 2nd and 3rd eigenvectors (Fiedler vectors) of the graph Laplacian.
+// Nodes connected by many edges appear close together; disconnected ones far apart.
+// Computed via Jacobi eigenvalue algorithm on the symmetric Laplacian matrix.
+function layoutSpectral() {
+  const nodes = simulation.nodes();
+  const n = nodes.length;
+  const idToIdx = Object.fromEntries(nodes.map((d, i) => [d.id, i]));
+
+  // Build Laplacian L = D - A  (D = degree matrix, A = adjacency)
+  const L = Array.from({ length: n }, () => new Float64Array(n));
+  currentLinks.forEach(link => {
+    const i = idToIdx[link.source.id ?? link.source];
+    const j = idToIdx[link.target.id ?? link.target];
+    if (i === undefined || j === undefined) return;
+    L[i][j] -= 1; L[j][i] -= 1;
+    L[i][i] += 1; L[j][j] += 1;
+  });
+
+  // Jacobi eigenvalue algorithm for symmetric matrices
+  // Returns eigenvectors as columns of V; eigenvalues in d
+  const V = Array.from({ length: n }, (_, i) =>
+    Float64Array.from({ length: n }, (_, j) => i === j ? 1 : 0));
+  const A = L.map(r => new Float64Array(r));
+  const MAX_ITER = n * n * 5;
+
+  for (let iter = 0; iter < MAX_ITER; iter++) {
+    let maxOff = 0, p = 0, q = 1;
+    // Find largest off-diagonal element
+    for (let i = 0; i < n - 1; i++)
+      for (let j = i + 1; j < n; j++)
+        if (Math.abs(A[i][j]) > maxOff) { maxOff = Math.abs(A[i][j]); p = i; q = j; }
+    if (maxOff < 1e-8) break;
+    // Jacobi rotation angle
+    const tau = (A[q][q] - A[p][p]) / (2 * A[p][q]);
+    const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau * tau));
+    const c   = 1 / Math.sqrt(1 + t * t), s = t * c;
+    // Update A
+    const App = A[p][p], Aqq = A[q][q], Apq = A[p][q];
+    A[p][p] = c*c*App - 2*s*c*Apq + s*s*Aqq;
+    A[q][q] = s*s*App + 2*s*c*Apq + c*c*Aqq;
+    A[p][q] = A[q][p] = 0;
+    for (let r = 0; r < n; r++) {
+      if (r === p || r === q) continue;
+      const Arp = A[r][p], Arq = A[r][q];
+      A[r][p] = A[p][r] = c*Arp - s*Arq;
+      A[r][q] = A[q][r] = s*Arp + c*Arq;
+    }
+    // Update eigenvectors V
+    for (let r = 0; r < n; r++) {
+      const Vrp = V[r][p], Vrq = V[r][q];
+      V[r][p] = c*Vrp - s*Vrq;
+      V[r][q] = s*Vrp + c*Vrq;
+    }
+  }
+  // Sort eigenvectors by eigenvalue (diagonal of A after convergence)
+  const eigs = Array.from({ length: n }, (_, i) => ({ val: A[i][i], vec: V.map(r => r[i]) }))
+    .sort((a, b) => a.val - b.val);
+
+  // Use 2nd and 3rd eigenvectors as x/y (skip the constant 1st eigenvector)
+  const v2 = eigs[1].vec, v3 = eigs[2].vec;
+  const scale = Math.min(width(), height()) * 0.4;
+  const cx = width() / 2, cy = height() / 2;
+  // Normalise to [-1, 1] then scale
+  const norm2 = Math.max(...v2.map(Math.abs)) || 1;
+  const norm3 = Math.max(...v3.map(Math.abs)) || 1;
+  applyPresetLayout(nodes.map((d, i) => ({
+    id: d.id,
+    x: cx + (v2[i] / norm2) * scale,
+    y: cy + (v3[i] / norm3) * scale,
+  })));
+}
+
+// ---- 10. SPIRAL ----
+// Archimedean spiral: r = a + b*θ. Nodes placed by degree rank (highest at centre).
+function layoutSpiral() {
+  const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
+  const cx = width() / 2, cy = height() / 2;
+  const turns   = 3;
+  const maxR    = Math.min(width(), height()) * 0.42;
+  applyPresetLayout(nodes.map((d, i) => {
+    const t     = i / nodes.length;         // 0..1 along the spiral
+    const angle = turns * 2 * Math.PI * t;  // total angle swept
+    const r     = maxR * t;
+    return { id: d.id, x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+  }));
+}
+
+// ---- 11. LINEAR ----
+// All nodes on a horizontal line, sorted by degree descending (hub in the centre)
+function layoutLinear() {
+  const nodes = [...simulation.nodes()].sort((a, b) => b.degree - a.degree);
+  const margin = width() * 0.1;
+  const step   = (width() - 2 * margin) / Math.max(nodes.length - 1, 1);
+  const cy     = height() / 2;
+  applyPresetLayout(nodes.map((d, i) => ({
+    id: d.id, x: margin + i * step, y: cy,
+  })));
+}
+
+// ---- 12. RANDOM ----
+function layoutRandom() {
+  const margin = 60;
+  applyPresetLayout(simulation.nodes().map(d => ({
+    id: d.id,
+    x: margin + Math.random() * (width()  - 2 * margin),
+    y: margin + Math.random() * (height() - 2 * margin),
+  })));
+}
+
+// ---- PLAY / STOP ----
+const playBtn = document.getElementById("play-btn");
+
+// setSimRunning: keeps the button label in sync with actual simulation state
+function setSimRunning(running) {
+  playBtn.textContent = running ? "⏸" : "▶";
+  playBtn.title       = running ? "Pause simulation" : "Resume simulation";
+  playBtn.classList.toggle("running", running);
+}
+
+playBtn.addEventListener("click", () => {
+  if (!simulation) return;
+  const isRunning = simulation.alpha() > simulation.alphaMin();
+  if (isRunning) {
+    simulation.stop();
+    setSimRunning(false);
+  } else {
+    // Only resume if we're in force layout — preset layouts fix all positions
+    if (currentLayout === "force") {
+      simulation.alpha(0.3).restart();
+      setSimRunning(true);
+    }
+  }
+});
+
+// ---- RESIZE ----
+window.addEventListener("resize", () => {
+  if (simulation) {
+    simulation.force("center", d3.forceCenter(width() / 2, height() / 2));
+    simulation.alpha(0.3).restart();
+  }
+});
+</script>
+
+<!--
+  HOW TO OPEN THIS FILE
+  ─────────────────────
+  The graph layout and edges load fine from file://.
+  Clicking a node to read its .md body requires a local HTTP server
+  (browsers block cross-origin file:// fetches by default).
+
+  Fix — one command from repo root:
+    python -m http.server 8765
+  Then open:
+    http://localhost:8765/viz/graph.html
+
+  Or use the built-in watcher (which starts the server automatically):
+    python tools/watch.py
+
+  <details>
+  <summary>Technical reason</summary>
+  Browsers enforce the same-origin policy for fetch() under file://.
+  A fetch from file:///path/viz/graph.html to file:///path/notes/foo.md
+  is treated as a cross-origin request and blocked with a CORS error.
+  Running python -m http.server makes all files share the origin
+  http://localhost:8765, so fetch() works normally.
+  </details>
+-->
+</body>
+</html>

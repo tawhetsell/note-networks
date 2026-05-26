@@ -1,0 +1,33 @@
+# Generated graph artifacts — regenerate with build_graph.py
+data/
+
+# Fetch artifacts (large, regenerable from Project Gutenberg)
+dialogue.txt
+raw_text.txt
+federalist_raw.txt
+federalist_papers.json
+
+# Personal AI workflow files — not relevant to public users
+CLAUDE.md
+AGENTS.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Editors
+.vscode/
+*.swp
+*~
+
+# Private notes (uncomment if your notes/ folder contains personal content)
+# notes/
