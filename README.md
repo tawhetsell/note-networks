@@ -33,13 +33,14 @@ The graph updates live as you write. Open a note in your editor, save, and the b
 - **Edge density filter** — collapse the graph from all edges down to only the strongest connections with a single click
 - **Gephi-aligned physics controls** — Repulsion and Gravity sliders that match the parameters Gephi users already know
 - **Scrollable note list** with sort by title, chronology, or degree centrality
-- **Write UI** — create, edit, and delete notes directly from the browser (requires the watch server)
+- **Write UI** — create, edit, and delete notes directly from the browser or desktop app
 - **Multiple networks** — maintain separate corpora and switch between them with a single flag
+- **Two runtimes from one codebase** — Python + browser for quick start, or native desktop app (Tauri + Rust) for a real installable product
 - **Fully local** — no account, no API key, no data leaves your machine
 
 ---
 
-## Quickstart
+## Quickstart (Python + browser)
 
 ```bash
 git clone https://github.com/tawhetsell/note-networks.git
@@ -51,6 +52,10 @@ python tools/watch.py
 Open **http://localhost:8765/viz/graph.html**.
 
 This launches the Aurelius demo corpus. To start your own network, see [Multiple networks](#multiple-networks) below.
+
+### Or run as a desktop app
+
+A native cross-platform desktop build (Tauri + Rust) is available under [`desktop/`](desktop/). See [Desktop app](#desktop-app) below — no HTTP server, no open ports, all CRUD over IPC.
 
 ---
 
@@ -153,6 +158,33 @@ That's all. The server creates the `data/` folder on first run, writes an empty 
 
 ---
 
+## Desktop app
+
+A native desktop build lives in [`desktop/`](desktop/), structured as a Cargo workspace:
+
+- **`core/`** — portable Rust library that mirrors `tools/build_graph.py`. TF-IDF, BM25, tokenization, frontmatter parsing, note CRUD. No UI or Tauri dependencies — reusable from any future binding (mobile, plugins, etc.).
+- **`cli/`** — Rust replacement for `build_graph.py`, useful if you want to drop Python from your build pipeline:
+  ```bash
+  cd desktop
+  cargo run --bin note-graph -- --corpus ../networks/aurelius
+  ```
+- **`src-tauri/`** — Tauri shell that opens a native window, talks to the Rust core over IPC, and reuses the same `viz/graph.html` frontend the Python server uses.
+
+**To build / run the desktop app:**
+
+```bash
+cd desktop
+npm install         # installs the Tauri CLI (one time)
+npm run dev         # opens the dev window
+npm run build       # produces a release .msi / .dmg installer
+```
+
+Prerequisites: Rust toolchain (`rustup default stable-x86_64-pc-windows-msvc` on Windows), Microsoft C++ Build Tools on Windows, Node.js 18+, Xcode Command Line Tools on macOS.
+
+The frontend (`viz/graph.html`) is **the same file** used by the Python server. It detects its runtime at boot and routes API calls to either Tauri IPC or HTTP. You can keep both runtimes installed and switch between them without touching the visualization layer.
+
+---
+
 ## Folder structure
 
 ```
@@ -166,17 +198,23 @@ note-networks/
 │   └── my-notes/
 │       └── notes/                ← empty, ready for your notes
 ├── tools/
-│   ├── build_graph.py            ← notes/ → data/graph.json  (--method tfidf|bm25)
+│   ├── build_graph.py            ← Python: notes/ → data/graph.json  (--method tfidf|bm25)
 │   └── watch.py                  ← file watcher + HTTP server + write API (port 8765)
 ├── viz/
-│   └── graph.html                ← self-contained browser viewer (d3 v7)
-└── requirements.txt
+│   └── graph.html                ← shared frontend — works in browser AND Tauri (d3 v7)
+├── desktop/                      ← native desktop app (Cargo workspace)
+│   ├── core/                     ← portable Rust graph-building library
+│   ├── cli/                      ← Rust CLI (drop-in replacement for build_graph.py)
+│   ├── src-tauri/                ← Tauri shell (Rust backend + IPC commands)
+│   └── package.json              ← Tauri CLI deps (npm install once)
+└── requirements.txt              ← Python deps for the watch.py path
 ```
 
 ---
 
 ## Requirements
 
+**Python + browser path (default):**
 - Python 3.10+
 - `watchdog` — see `requirements.txt`
 - A modern browser
@@ -187,6 +225,13 @@ No Node.js, no build step, no database. `d3.js` loads from CDN on first open; su
 |---|---|
 | macOS / Linux | `python3 tools/watch.py [networks/<name>]` |
 | Windows | `python tools/watch.py [networks/<name>]` |
+
+**Desktop app path (optional):**
+- Rust toolchain (stable, MSVC variant on Windows)
+- Node.js 18+ (used only for the Tauri CLI tooling)
+- Microsoft C++ Build Tools on Windows / Xcode CLT on macOS
+
+See [Desktop app](#desktop-app) above for the build commands.
 
 ---
 
@@ -207,9 +252,10 @@ The TF-IDF and Tags link methods produce visually distinct graphs of the same co
 
 | Version | Feature |
 |---|---|
-| V1 (current) | TF-IDF and tag-based links, 12 layout algorithms, live reload, write UI, multiple networks |
+| V1 (current) | TF-IDF and tag-based links, 12 layout algorithms, live reload, write UI, multiple networks, dual runtime (Python server + Tauri desktop app) |
+| V1.1 | Event-based reload (replace HTTP polling with Tauri events), in-app network picker, packaged installers (.msi / .dmg) |
 | V2 | Named-entity extraction (spaCy) for person / place / concept nodes |
-| V3 | Sentence-transformer embeddings for semantic similarity |
+| V3 | Sentence-transformer embeddings for semantic similarity; iOS capture app via Obsidian Sync or iCloud-shared vault |
 
 ---
 

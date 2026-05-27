@@ -549,8 +549,23 @@
   pointing at private content without authentication.
 -->
 
-<script>
+<script type="module">
 "use strict";
+
+// ---- Surface uncaught JS errors as a visible banner (otherwise they vanish silently in the webview) ----
+window.addEventListener("error", (e) => _showError(`JS error: ${e.message} @ ${e.filename}:${e.lineno}`));
+window.addEventListener("unhandledrejection", (e) => _showError(`Promise rejection: ${e.reason && (e.reason.message || e.reason)}`));
+function _showError(msg) {
+  let b = document.getElementById("debug-banner");
+  if (!b) {
+    b = document.createElement("div");
+    b.id = "debug-banner";
+    b.style.cssText =
+      "position:fixed;top:0;left:0;right:0;z-index:9999;background:#702020;color:#fff;padding:8px 12px;font:12px monospace;white-space:pre-wrap;max-height:40vh;overflow:auto;";
+    (document.body || document.documentElement).appendChild(b);
+  }
+  b.textContent += "\n" + msg;
+}
 
 // Fixed simulation constants — not exposed as sliders
 const LINK_DIST      = 90;    // forceLink rest length
@@ -611,9 +626,59 @@ const zoom = d3.zoom()
   .on("zoom", (event) => g.attr("transform", event.transform));
 svg.call(zoom);
 
+// ---- DUAL-MODE API LAYER ----
+// The same graph.html file runs in two environments:
+//   (1) browser served by watch.py → fetch() over HTTP
+//   (2) Tauri desktop window       → window.__TAURI__.core.invoke() over IPC
+// `api` is the unified surface every other piece of code calls.
+const TAURI    = window.__TAURI__;
+const isTauri  = !!TAURI;
+const invoke   = isTauri ? TAURI.core.invoke : null;
+
+// CORPUS is meaningful only in Tauri mode; in browser mode the watch.py
+// server is already bound to a single corpus and translates /data + /notes paths.
+// Hard-coded for Phase 3; network picker comes in Phase 6.
+let CORPUS = "../../networks/aurelius";
+
+function throwIfNotOk(r) {
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r;
+}
+
+const api = isTauri ? {
+  ping:        ()                 => invoke("ping"),
+  loadGraph:   ()                 => invoke("get_graph",   { corpus: CORPUS }),
+  readNote:    (stem)             => invoke("get_note",    { corpus: CORPUS, stem }),
+  updateNote:  (stem, tags, body) => invoke("update_note", { corpus: CORPUS, stem, tags, body }),
+  createNote:  (data)             => invoke("create_note", { corpus: CORPUS, ...data }),
+  deleteNote:  (stem)             => invoke("delete_note", { corpus: CORPUS, stem }),
+  // In Tauri mode Phase 4 will replace polling with a 'graph-updated' event listener.
+  graphChangedSince: () => Promise.resolve({ changed: false, marker: null }),
+} : {
+  ping:        ()                 => fetch("/api/ping").then(throwIfNotOk).then(r => r.json()),
+  loadGraph:   ()                 => fetch("../data/graph.json").then(throwIfNotOk).then(r => r.json()),
+  readNote:    (stem)             => fetch(`/api/note/${stem}`).then(throwIfNotOk).then(r => r.json()).then(d => d.content),
+  updateNote:  (stem, tags, body) => fetch(`/api/note/${stem}`, {
+                                       method: "POST",
+                                       headers: { "Content-Type": "application/json" },
+                                       body: JSON.stringify({ tags, body }),
+                                     }).then(throwIfNotOk).then(r => r.json()),
+  createNote:  (data)             => fetch("/api/note", {
+                                       method: "POST",
+                                       headers: { "Content-Type": "application/json" },
+                                       body: JSON.stringify(data),
+                                     }).then(throwIfNotOk).then(r => r.json()),
+  deleteNote:  (stem)             => fetch(`/api/note/${stem}`, { method: "DELETE" })
+                                       .then(throwIfNotOk).then(r => r.json()),
+  graphChangedSince: (marker)     => fetch("../data/graph.json", { method: "HEAD" })
+                                       .then(r => {
+                                         const lm = r.headers.get("Last-Modified");
+                                         return { changed: lm && lm !== marker, marker: lm };
+                                       }),
+};
+
 // ---- FETCH + RELOAD ----
-const GRAPH_URL    = "../data/graph.json";
-let   lastModified = null;   // tracks Last-Modified header for change detection
+let lastModified = null;   // tracks Last-Modified header for change detection (browser mode)
 
 // loadGraph: fetch graph.json and re-render. Preserves node positions across reloads.
 function loadGraph(showSpinner = false) {
@@ -628,12 +693,17 @@ function loadGraph(showSpinner = false) {
     simulation.stop();
   }
 
-  fetch(GRAPH_URL)
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      // Cache the Last-Modified header for the auto-poll comparison
-      lastModified = r.headers.get("Last-Modified");
-      return r.json();
+  api.loadGraph()
+    .then(data => {
+      // In browser mode the HEAD poll uses Last-Modified, but loadGraph
+      // returns parsed JSON, so we refresh the marker via a small HEAD probe.
+      // In Tauri mode this is a no-op.
+      if (!isTauri) {
+        fetch("../data/graph.json", { method: "HEAD" })
+          .then(r => { lastModified = r.headers.get("Last-Modified"); })
+          .catch(() => {});
+      }
+      return data;
     })
     .then(data => {
       allData = data;
@@ -655,11 +725,12 @@ function loadGraph(showSpinner = false) {
 // Auto-poll: HEAD request every 3 s; re-render only if Last-Modified changed.
 // HEAD fetches only headers (no body) — very lightweight.
 function startPoll() {
+  // In Tauri mode this whole loop is a no-op; Phase 4 swaps it for an event listener.
+  if (isTauri) return;
   setInterval(() => {
-    fetch(GRAPH_URL, { method: "HEAD" })
-      .then(r => {
-        const lm = r.headers.get("Last-Modified");
-        if (lm && lm !== lastModified) loadGraph();
+    api.graphChangedSince(lastModified)
+      .then(({ changed, marker }) => {
+        if (changed) loadGraph();
       })
       .catch(() => {});   // silently ignore poll failures
   }, 3000);
@@ -1065,6 +1136,12 @@ function showPanel(d) {
 // Progressive enhancement: write controls are invisible unless watch.py is running.
 // detectWriteServer pings /api/ping on load; 200 → canEdit = true.
 async function detectWriteServer() {
+  // In Tauri mode the IPC channel is always available, so write controls are always on.
+  if (isTauri) {
+    canEdit = true;
+    document.getElementById("create-note-btn").style.display = "block";
+    return;
+  }
   try {
     const r = await fetch("/api/ping", { signal: AbortSignal.timeout(1000) });
     if (r.ok) {
@@ -1081,11 +1158,10 @@ function enterEditMode() {
   createMode = false;
   writeMode  = true;
 
-  fetch(`/api/note/${activeNoteD.id}`)
-    .then(r => r.json())
-    .then(data => {
+  api.readNote(activeNoteD.id)
+    .then(raw => {
       // Strip frontmatter — only body goes in the textarea
-      const body = (data.content || "").replace(/^---\n[\s\S]*?\n---\n\n?/, "");
+      const body = (raw || "").replace(/^---\n[\s\S]*?\n---\n\n?/, "");
       const tags = Array.isArray(activeNoteD.tags) ? activeNoteD.tags.join(", ") : "";
       document.getElementById("form-tags").value   = tags;
       document.getElementById("form-body").value   = body;
@@ -1142,26 +1218,16 @@ async function saveNote(event) {
     const noteId = document.getElementById("form-id").value.trim();
     if (!noteId) { statusEl.textContent = "Note ID is required."; return; }
     try {
-      const r    = await fetch("/api/note", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: noteId, tags, body }),
-      });
-      const data = await r.json();
-      if (!r.ok) { statusEl.textContent = `Error: ${data.error}`; return; }
+      await api.createNote({ id: noteId, tags, body });
       statusEl.textContent = "Created! Graph will rebuild shortly.";
       // File watcher handles rebuild; close panel after a moment
       setTimeout(() => { exitWriteMode(); closePanel(); }, 1800);
     } catch (err) {
-      statusEl.textContent = `Save failed: ${err.message}`;
+      statusEl.textContent = `Save failed: ${err.message || err}`;
     }
   } else {
     try {
-      const r    = await fetch(`/api/note/${activeNoteD.id}`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tags, body }),
-      });
-      const data = await r.json();
-      if (!r.ok) { statusEl.textContent = `Error: ${data.error}`; return; }
+      await api.updateNote(activeNoteD.id, tags, body);
       statusEl.textContent = "Saved! Graph will rebuild shortly.";
       // Update the live panel without waiting for graph reload
       setTimeout(() => {
@@ -1172,7 +1238,7 @@ async function saveNote(event) {
         );
       }, 800);
     } catch (err) {
-      statusEl.textContent = `Save failed: ${err.message}`;
+      statusEl.textContent = `Save failed: ${err.message || err}`;
     }
   }
 }
@@ -1189,62 +1255,38 @@ async function deleteNote() {
   const statusEl = document.getElementById("form-status");
   statusEl.textContent = "Deleting…";
   try {
-    const r    = await fetch(`/api/note/${activeNoteD.id}`, { method: "DELETE" });
-    const data = await r.json();
-    if (!r.ok) { statusEl.textContent = `Error: ${data.error}`; return; }
+    await api.deleteNote(activeNoteD.id);
     exitWriteMode();
     closePanel();
   } catch (err) {
-    statusEl.textContent = `Delete failed: ${err.message}`;
+    statusEl.textContent = `Delete failed: ${err.message || err}`;
   }
 }
 
-function fetchNoteBody(noteId) {
-  // The filename has a slug appended: we can't know it without listing the dir.
-  // Workaround: we stored it in graph.json as "label" which equals the file stem.
-  // Fetch by stem — the server returns 404 for exact path; we need the full filename.
-  // Strategy: fetch the graph JSON again to get the stored label, then construct path.
-  // Simpler approach: embed the filename in graph.json "file" field. But we don't yet.
-  // Current approach: try to guess by fetching /notes/{id}* which requires server-side
-  // directory listing. Instead, embed note body directly when building graph.json.
-  // For now: load text from the node's `body` if pre-embedded, else show a message.
+async function fetchNoteBody(noteId) {
+  // Optional cache: if a future build embeds bodies in graph.json, prefer that.
   const node = simulation ? simulation.nodes().find(n => n.id === noteId) : null;
   if (node && node._body) {
     panelBody.textContent = node._body;
     return;
   }
 
-  // Try a direct fetch — works under http://localhost, not under file://
-  const isFileProtocol = window.location.protocol === "file:";
-  if (isFileProtocol) {
+  // file:// with no Tauri = no way to read the file
+  if (!isTauri && window.location.protocol === "file:") {
     document.getElementById("file-warning").style.display = "block";
     panelBody.textContent = "";
-    panelErr.textContent  = "Run via localhost to read note bodies (see warning below).";
+    panelErr.textContent  = "Run via localhost or the desktop app to read note bodies.";
     return;
   }
 
-  // List notes directory to find the matching filename
-  fetch("../notes/")
-    .then(r => r.text())
-    .then(html => {
-      // Parse directory listing for files starting with noteId
-      const re    = new RegExp(`href="([^"]*${noteId}[^"]*\\.md)"`, "i");
-      const match = re.exec(html);
-      if (!match) throw new Error("File not found in directory listing.");
-      return fetch(`../notes/${match[1]}`);
-    })
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.text();
-    })
-    .then(text => {
-      // Strip YAML frontmatter before displaying
-      panelBody.textContent = text.replace(/^---\n[\s\S]*?\n---\n\n?/, "");
-    })
-    .catch(err => {
-      panelBody.textContent = "";
-      panelErr.textContent  = `Could not load note: ${err.message}`;
-    });
+  try {
+    const raw = await api.readNote(noteId);
+    // Strip YAML frontmatter before displaying
+    panelBody.textContent = (raw || "").replace(/^---\n[\s\S]*?\n---\n\n?/, "");
+  } catch (err) {
+    panelBody.textContent = "";
+    panelErr.textContent  = `Could not load note: ${err.message || err}`;
+  }
 }
 
 // ---- SEARCH ----

@@ -1,0 +1,21 @@
+[package]
+name        = "note-networks-app"
+description = "Note Networks desktop application (Tauri shell)"
+version.workspace     = true
+edition.workspace     = true
+authors.workspace     = true
+license.workspace     = true
+
+[lib]
+name       = "note_networks_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri           = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde           = { workspace = true }
+serde_json      = { workspace = true }
+note-graph-core = { path = "../core" }

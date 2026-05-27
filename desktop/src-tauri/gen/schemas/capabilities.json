@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Capabilities the main window is allowed to use","local":true,"windows":["main"],"permissions":["core:default","core:window:default","core:event:default","dialog:default"]}}
