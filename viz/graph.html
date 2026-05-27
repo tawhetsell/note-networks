@@ -340,6 +340,14 @@
     border-radius: 4px; cursor: pointer; font-size: 12px;
   }
   #cancel-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #delete-row { margin-top: 4px; }
+  #delete-row.hidden { display: none; }
+  #delete-btn {
+    width: 100%; padding: 6px 0;
+    background: none; border: 1px solid #b04040;
+    color: #c06060; border-radius: 4px; cursor: pointer; font-size: 12px;
+  }
+  #delete-btn:hover { background: rgba(176,64,64,0.2); border-color: #d06060; color: #d88; }
   #form-status { font-size: 11px; color: var(--muted); min-height: 16px; }
 
   /* ---- FILE:// WARNING ---- */
@@ -523,6 +531,9 @@
         <div id="form-actions">
           <button type="submit" id="save-btn">Save</button>
           <button type="button" id="cancel-btn">Cancel</button>
+        </div>
+        <div id="delete-row" class="hidden">
+          <button type="button" id="delete-btn">Delete note</button>
         </div>
         <div id="form-status"></div>
       </form>
@@ -1079,6 +1090,7 @@ function enterEditMode() {
       document.getElementById("form-tags").value   = tags;
       document.getElementById("form-body").value   = body;
       document.getElementById("create-fields").classList.add("hidden");
+      document.getElementById("delete-row").classList.remove("hidden");
       document.getElementById("form-status").textContent = "";
       document.getElementById("read-view").classList.add("hidden");
       document.getElementById("write-view").classList.remove("hidden");
@@ -1097,6 +1109,7 @@ function enterCreateMode() {
   panel.classList.remove("hidden");
   document.getElementById("edit-note-btn").style.display = "none";
   document.getElementById("create-fields").classList.remove("hidden");
+  document.getElementById("delete-row").classList.add("hidden");
   document.getElementById("form-id").value     = "";
   document.getElementById("form-tags").value   = "";
   document.getElementById("form-body").value   = "";
@@ -1109,6 +1122,7 @@ function enterCreateMode() {
 function exitWriteMode() {
   writeMode = false;
   document.getElementById("write-view").classList.add("hidden");
+  document.getElementById("delete-row").classList.add("hidden");
   document.getElementById("read-view").classList.remove("hidden");
   if (canEdit && activeNoteD) {
     document.getElementById("edit-note-btn").style.display = "block";
@@ -1167,6 +1181,23 @@ document.getElementById("edit-note-btn").addEventListener("click", enterEditMode
 document.getElementById("create-note-btn").addEventListener("click", enterCreateMode);
 document.getElementById("cancel-btn").addEventListener("click", exitWriteMode);
 document.getElementById("note-form").addEventListener("submit", saveNote);
+document.getElementById("delete-btn").addEventListener("click", deleteNote);
+
+async function deleteNote() {
+  if (!activeNoteD) return;
+  if (!confirm(`Delete "${activeNoteD.id}"? This cannot be undone.`)) return;
+  const statusEl = document.getElementById("form-status");
+  statusEl.textContent = "Deleting…";
+  try {
+    const r    = await fetch(`/api/note/${activeNoteD.id}`, { method: "DELETE" });
+    const data = await r.json();
+    if (!r.ok) { statusEl.textContent = `Error: ${data.error}`; return; }
+    exitWriteMode();
+    closePanel();
+  } catch (err) {
+    statusEl.textContent = `Delete failed: ${err.message}`;
+  }
+}
 
 function fetchNoteBody(noteId) {
   // The filename has a slug appended: we can't know it without listing the dir.

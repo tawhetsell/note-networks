@@ -24,11 +24,15 @@ from pathlib import Path
 from watchdog.events import FileSystemEventHandler    # base class for FS events
 from watchdog.observers import Observer               # thread that polls FS
 
-REPO      = Path(__file__).resolve().parent.parent
-NOTES_DIR = REPO / "notes"
-BUILDER   = REPO / "tools" / "build_graph.py"
-PORT      = 8765
-DEBOUNCE  = 0.5          # seconds to wait after last change before rebuilding
+REPO       = Path(__file__).resolve().parent.parent
+BUILDER    = REPO / "tools" / "build_graph.py"
+PORT       = 8765
+DEBOUNCE   = 0.5   # seconds to wait after last change before rebuilding
+
+# CORPUS_DIR and NOTES_DIR are set in main() from the CLI corpus argument.
+# Module-level defaults keep type checkers and the file helpers happy at import time.
+CORPUS_DIR = REPO / "networks" / "aurelius"
+NOTES_DIR  = CORPUS_DIR / "notes"
 
 
 # ---- NOTE FILE HELPERS ----
@@ -52,17 +56,29 @@ def _read_frontmatter_and_body(text: str) -> tuple[dict, str]:
     if not m:
         return {}, text
     fm: dict = {}
+    current_key = None   # tracks the last key that opened a multi-line list
     for line in m.group(1).splitlines():
+        stripped = line.strip()
+        if stripped.startswith("- ") and current_key is not None:
+            if not isinstance(fm.get(current_key), list):
+                fm[current_key] = []
+            fm[current_key].append(stripped[2:].strip().strip('"').strip("'"))
+            continue
         if ":" not in line:
+            current_key = None
             continue
         key, _, val = line.partition(":")
-        key = key.strip()
-        val = val.strip().strip('"').strip("'")
+        key  = key.strip()
+        val  = val.strip().strip('"').strip("'")
+        current_key = None
         if val.startswith("[") and val.endswith("]"):
             inner = val[1:-1]
             fm[key] = [v.strip().strip('"').strip("'") for v in inner.split(",") if v.strip()]
         elif val.isdigit():
             fm[key] = int(val)
+        elif val == "":
+            fm[key] = []
+            current_key = key
         else:
             fm[key] = val
     return fm, text[m.end():]
@@ -93,6 +109,19 @@ class AppHandler(SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):  # noqa: A002
         pass   # suppress per-request noise
+
+    def translate_path(self, path):
+        # Redirect /data/* and /notes/* to CORPUS_DIR so graph.html paths work
+        # regardless of where the corpus lives.  All other paths serve from repo root.
+        import urllib.parse, posixpath
+        clean = path.split("?")[0].split("#")[0]
+        p = urllib.parse.unquote(clean, errors="surrogatepass")
+        p = posixpath.normpath(p)
+        if p.startswith("/data") or p.startswith("/notes"):
+            # strip leading slash, join with corpus dir
+            parts = [w for w in p.split("/") if w not in ("", ".", "..")]
+            return str(CORPUS_DIR.joinpath(*parts)) if parts else str(CORPUS_DIR)
+        return super().translate_path(path)
 
     def _send_json(self, code: int, data: dict) -> None:
         body = _json.dumps(data).encode()
@@ -173,10 +202,22 @@ class AppHandler(SimpleHTTPRequestHandler):
 
         self._send_json(404, {"error": "Unknown endpoint"})
 
+    def do_DELETE(self):
+        if self.path.startswith("/api/note/") and self.path != "/api/note/":
+            stem = self.path[len("/api/note/"):]
+            p = _find_note_file(stem)
+            if not p:
+                self._send_json(404, {"error": "Note not found"})
+                return
+            p.unlink()
+            self._send_json(200, {"ok": True})
+            return
+        self._send_json(404, {"error": "Unknown endpoint"})
+
     def do_OPTIONS(self):
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
@@ -219,7 +260,7 @@ class RebuildHandler(FileSystemEventHandler):
         ts = time.strftime("%H:%M:%S")
         print(f"[{ts}] Change detected — rebuilding graph...", flush=True)
         result = subprocess.run(
-            [sys.executable, str(BUILDER)],
+            [sys.executable, str(BUILDER), "--corpus", str(CORPUS_DIR)],
             capture_output=True, text=True,
             cwd=str(REPO)
         )
@@ -238,17 +279,36 @@ class RebuildHandler(FileSystemEventHandler):
 # ---- MAIN ----
 
 def main():
-    import os
-    os.chdir(str(REPO))   # serve files relative to repo root
+    import argparse, os
+    global CORPUS_DIR, NOTES_DIR
 
+    parser = argparse.ArgumentParser(description="Watch a note corpus and serve the viewer.")
+    parser.add_argument(
+        "corpus", nargs="?", type=Path, default=REPO / "networks" / "aurelius",
+        help="Corpus directory (default: networks/aurelius/).  Created automatically if missing.",
+    )
+    args = parser.parse_args()
+
+    CORPUS_DIR = args.corpus.resolve()
+    NOTES_DIR  = CORPUS_DIR / "notes"
+
+    # Create corpus structure if it doesn't exist yet
+    NOTES_DIR.mkdir(parents=True, exist_ok=True)
+    (CORPUS_DIR / "data").mkdir(parents=True, exist_ok=True)
+
+    os.chdir(str(REPO))   # serve static files relative to repo root
+
+    print(f"Corpus:  {CORPUS_DIR}")
     print(f"Watching {NOTES_DIR} for changes...")
     print(f"Serving  http://localhost:{PORT}/viz/graph.html")
     print(f"Press Ctrl-C to stop.\n")
 
     # Run an initial build so the page loads immediately
     print("Initial build...", end=" ", flush=True)
-    r = subprocess.run([sys.executable, str(BUILDER)], cwd=str(REPO),
-                       capture_output=True, text=True)
+    r = subprocess.run(
+        [sys.executable, str(BUILDER), "--corpus", str(CORPUS_DIR)],
+        cwd=str(REPO), capture_output=True, text=True,
+    )
     print("OK" if r.returncode == 0 else f"FAILED\n{r.stderr}")
 
     # webbrowser.open: launches the system default browser

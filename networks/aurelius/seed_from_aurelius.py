@@ -17,8 +17,9 @@ import re
 from pathlib import Path
 
 REPO      = Path(__file__).resolve().parent.parent
-NOTES     = REPO / "notes"
-SOURCE    = REPO / "tools" / "Aurelius_text.md"
+CORPUS    = Path(__file__).resolve().parent   # aurelius/ folder
+NOTES     = CORPUS / "notes"
+SOURCE    = CORPUS / "Aurelius_text.md"
 
 # Ordinal word → book number
 ORDINALS = {

@@ -28,9 +28,7 @@ from math import log
 from pathlib import Path
 
 # ---- CONFIG (tune these to taste) ----
-REPO       = Path(__file__).resolve().parent.parent   # repo root via script location
-NOTES_DIR  = REPO / "notes"
-OUTPUT_DIR = REPO / "data"
+REPO = Path(__file__).resolve().parent.parent   # repo root via script location
 
 MIN_SHARED = 1       # minimum shared distinctive terms to draw an edge
 TOP_K      = 25      # keep top-K TF-IDF terms per note
@@ -73,27 +71,40 @@ def strip_frontmatter(text: str) -> str:
 def parse_frontmatter(text: str) -> dict:
     """
     Extract key: value pairs from a YAML frontmatter block.
-    Handles: string, quoted string, list ([a, b, c]), int.
-    Not a full YAML parser — sufficient for our simple schema.
+    Handles: string, quoted string, inline list ([a, b, c]),
+    multi-line list (- item per line), and int.
+    Not a full YAML parser — sufficient for our schema and Obsidian-style notes.
     """
     m = _FM_RE.match(text)
     if not m:
         return {}
     block = m.group(0)[4:-4]   # strip leading '---\n' and trailing '\n---\n'
     result = {}
+    current_key = None   # tracks the last key that opened a multi-line list
     for line in block.splitlines():
+        stripped = line.strip()
+        # Multi-line list item (e.g. Obsidian writes tags as "  - tag")
+        if stripped.startswith("- ") and current_key is not None:
+            if not isinstance(result.get(current_key), list):
+                result[current_key] = []
+            result[current_key].append(stripped[2:].strip().strip('"').strip("'"))
+            continue
         if ":" not in line:
+            current_key = None
             continue
         key, _, val = line.partition(":")
-        key = key.strip()
-        val = val.strip().strip('"').strip("'")
-        # list field: [a, b, c]
+        key  = key.strip()
+        val  = val.strip().strip('"').strip("'")
+        current_key = None
         if val.startswith("[") and val.endswith("]"):
             inner = val[1:-1]
             result[key] = [v.strip().strip('"').strip("'")
                            for v in inner.split(",") if v.strip()]
         elif val.isdigit():
             result[key] = int(val)
+        elif val == "":
+            result[key] = []   # empty value — expect multi-line list items next
+            current_key = key
         else:
             result[key] = val
     return result
@@ -136,18 +147,26 @@ def tokens(text: str) -> list[str]:
 
 # ---- BUILD ----
 
-def build(method: str = "tfidf"):
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+def build(method: str = "tfidf", corpus_dir: Path | None = None):
+    # corpus_dir: folder containing notes/ and data/ subdirectories.
+    # Defaults to aurelius/ inside the repo when not specified.
+    corpus_dir = (corpus_dir or REPO / "networks" / "aurelius").resolve()
+    notes_dir  = corpus_dir / "notes"
+    output_dir = corpus_dir / "data"
+
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Collect files (rglob = recursive glob across all subdirectories)
     files = sorted(
-        p for p in NOTES_DIR.rglob("*")
+        p for p in notes_dir.rglob("*")
         if p.suffix.lower() in {".md", ".txt", ".rtf"}
     )
     if not files:
-        print(f"No notes found in {NOTES_DIR}. Run: python tools/seed_from_aurelius.py",
-              file=sys.stderr)
-        sys.exit(1)
+        # Empty corpus — write a valid empty graph so the viewer still loads
+        empty = {"nodes": [], "edges": []}
+        (output_dir / "graph.json").write_text(json.dumps(empty), encoding="utf-8")
+        print(f"Built graph [{method}]: 0 nodes, 0 edges (no notes yet)")
+        return
 
     # Read text and parse frontmatter per file
     raw_texts = {p.stem: read_file(p) for p in files}
@@ -222,10 +241,10 @@ def build(method: str = "tfidf"):
     graph = {"nodes": nodes, "edges": edges}
 
     # ---- OUTPUTS ----
-    json_out = OUTPUT_DIR / "graph.json"
+    json_out = output_dir / "graph.json"
     json_out.write_text(json.dumps(graph, indent=2), encoding="utf-8")
 
-    csv_out = OUTPUT_DIR / "co_occurrence.csv"
+    csv_out = output_dir / "co_occurrence.csv"
     weights = {(e["from"], e["to"]): e["weight"] for e in edges}
     with csv_out.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -247,10 +266,14 @@ def build(method: str = "tfidf"):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Build note graph from notes/")
+    parser = argparse.ArgumentParser(description="Build note graph from a corpus directory.")
     parser.add_argument(
         "--method", choices=["tfidf", "bm25"], default="tfidf",
         help="Link scoring algorithm (default: tfidf)",
     )
+    parser.add_argument(
+        "--corpus", type=Path, default=None,
+        help="Corpus directory containing notes/ (default: aurelius/)",
+    )
     args = parser.parse_args()
-    build(args.method)
+    build(args.method, args.corpus)
