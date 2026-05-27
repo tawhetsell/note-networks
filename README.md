@@ -4,6 +4,16 @@ Turn a folder of markdown notes into an interactive, self-updating knowledge gra
 
 ---
 
+## Screenshots
+
+![Grid layout — Aurelius corpus](docs/note-networks-screenshot-1.png)
+*Grid layout — 74 passages from Marcus Aurelius's Meditations, node size by degree centrality*
+
+![Force Atlas layout — Aurelius corpus](docs/note-networks-screenshot-2.png)
+*Force Atlas layout — same corpus, organic clustering by thematic similarity*
+
+---
+
 ## Use case
 
 You have a body of text you want to think with: research notes, book excerpts, meeting summaries, a reading journal. You want to see the structure — which ideas cluster, which are hubs everything passes through, which sit isolated at the edges.
