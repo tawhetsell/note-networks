@@ -20,6 +20,17 @@ venv/
 dist/
 build/
 
+# Rust build artifacts (multi-GB — never commit)
+desktop/target/
+target/
+
+# Node / Tauri tooling
+desktop/node_modules/
+node_modules/
+
+# Tauri-generated schemas + config (regenerated on build)
+desktop/src-tauri/gen/
+
 # macOS
 .DS_Store
 .AppleDouble
