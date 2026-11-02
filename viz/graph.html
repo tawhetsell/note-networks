@@ -18,7 +18,14 @@
   Different vocabulary; same numerical model.
 -->
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<!--
+  d3 is vendored (a pinned copy kept in the repo) rather than loaded from a CDN:
+  a CDN file can change under you, and in the desktop app any script on this page
+  can call the note read/edit/delete commands.  Same path works under watch.py
+  (/viz/vendor/…) and Tauri (frontendDist = viz/).  To upgrade, replace the file
+  with the new version's dist/d3.min.js from the npm package.
+-->
+<script src="vendor/d3-7.9.0.min.js"></script>
 
 <style>
   /* ---- BASE / DARK MODE ---- */
