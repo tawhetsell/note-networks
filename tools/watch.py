@@ -29,6 +29,10 @@ BUILDER    = REPO / "tools" / "build_graph.py"
 PORT       = 8765
 DEBOUNCE   = 0.5   # seconds to wait after last change before rebuilding
 
+# Origins allowed to POST/DELETE.  graph.html is served from this server, so its
+# requests are same-origin; anything else (another site open in the browser) is refused.
+ALLOWED_ORIGINS = {f"http://localhost:{PORT}", f"http://127.0.0.1:{PORT}"}
+
 # CORPUS_DIR and NOTES_DIR are set in main() from the CLI corpus argument.
 # Module-level defaults keep type checkers and the file helpers happy at import time.
 CORPUS_DIR = REPO / "networks" / "aurelius"
@@ -37,14 +41,33 @@ NOTES_DIR  = CORPUS_DIR / "notes"
 
 # ---- NOTE FILE HELPERS ----
 
+def _inside_notes_dir(p: Path) -> bool:
+    """True if p, after resolving symlinks and '..', still lives under NOTES_DIR."""
+    # Path.resolve(): make absolute and follow symlinks (works on paths that don't exist yet).
+    # Path.is_relative_to(): True if the path starts with the given directory.
+    try:
+        return p.resolve().is_relative_to(NOTES_DIR.resolve())
+    except OSError:
+        # e.g. Windows "D:x" names point at another drive that may be locked/missing
+        return False
+
+def _valid_stem(stem: str) -> bool:
+    """
+    Reject note names that could escape NOTES_DIR (path traversal).
+    A stem is a bare filename: no separators, no '..', no NUL byte.
+    """
+    if not stem or ".." in stem or any(c in stem for c in ("/", "\\", "\0")):
+        return False
+    return _inside_notes_dir(NOTES_DIR / (stem + ".md"))
+
 def _find_note_file(stem: str) -> Path | None:
     """Return the Path for a note by its stem (filename without extension)."""
     for ext in (".md", ".txt", ".rtf"):
         p = NOTES_DIR / (stem + ext)
-        if p.exists():
+        if p.exists() and _inside_notes_dir(p):
             return p
     for p in NOTES_DIR.rglob(stem + ".*"):
-        if p.suffix.lower() in {".md", ".txt", ".rtf"}:
+        if p.suffix.lower() in {".md", ".txt", ".rtf"} and _inside_notes_dir(p):
             return p
     return None
 
@@ -137,6 +160,9 @@ class AppHandler(SimpleHTTPRequestHandler):
             return
         if self.path.startswith("/api/note/"):
             stem = self.path[len("/api/note/"):]
+            if not _valid_stem(stem):
+                self._send_json(400, {"error": "Invalid note name"})
+                return
             p = _find_note_file(stem)
             if not p:
                 self._send_json(404, {"error": "Not found"})
@@ -146,7 +172,21 @@ class AppHandler(SimpleHTTPRequestHandler):
             return
         super().do_GET()
 
+    def _origin_ok(self) -> bool:
+        """
+        Browsers attach an Origin header to cross-site POST/DELETE requests.
+        If one is present and isn't this server, another website is trying to
+        write to our notes — refuse.  (No Origin = curl/scripts; allowed.)
+        """
+        origin = self.headers.get("Origin")
+        if origin is not None and origin not in ALLOWED_ORIGINS:
+            self._send_json(403, {"error": "Origin not allowed"})
+            return False
+        return True
+
     def do_POST(self):
+        if not self._origin_ok():
+            return
         length = int(self.headers.get("Content-Length", 0))
         try:
             payload = _json.loads(self.rfile.read(length))
@@ -157,6 +197,9 @@ class AppHandler(SimpleHTTPRequestHandler):
         if self.path.startswith("/api/note/") and self.path != "/api/note/":
             # Update existing note: preserve all frontmatter, replace tags + body
             stem = self.path[len("/api/note/"):]
+            if not _valid_stem(stem):
+                self._send_json(400, {"error": "Invalid note name"})
+                return
             p = _find_note_file(stem)
             if not p:
                 self._send_json(404, {"error": "Note not found"})
@@ -181,6 +224,9 @@ class AppHandler(SimpleHTTPRequestHandler):
             if not note_id:
                 self._send_json(400, {"error": "id required"})
                 return
+            if not _valid_stem(note_id):
+                self._send_json(400, {"error": "Invalid note name"})
+                return
             p = NOTES_DIR / (note_id + ".md")
             if p.exists():
                 self._send_json(409, {"error": "Note already exists"})
@@ -203,8 +249,13 @@ class AppHandler(SimpleHTTPRequestHandler):
         self._send_json(404, {"error": "Unknown endpoint"})
 
     def do_DELETE(self):
+        if not self._origin_ok():
+            return
         if self.path.startswith("/api/note/") and self.path != "/api/note/":
             stem = self.path[len("/api/note/"):]
+            if not _valid_stem(stem):
+                self._send_json(400, {"error": "Invalid note name"})
+                return
             p = _find_note_file(stem)
             if not p:
                 self._send_json(404, {"error": "Note not found"})
@@ -215,16 +266,18 @@ class AppHandler(SimpleHTTPRequestHandler):
         self._send_json(404, {"error": "Unknown endpoint"})
 
     def do_OPTIONS(self):
+        # No Access-Control-* headers on purpose: graph.html is same-origin and never
+        # sends a CORS preflight, so a cross-site preflight here should simply fail.
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Allow", "GET, POST, DELETE, OPTIONS")
         self.end_headers()
 
 
 def start_server():
     """Serve repo root on PORT in a daemon thread (dies with the main process)."""
-    server = HTTPServer(("", PORT), AppHandler)
+    # 127.0.0.1 = loopback only.  "" would listen on every interface (LAN, Wi-Fi),
+    # letting other machines on the network read and edit notes.
+    server = HTTPServer(("127.0.0.1", PORT), AppHandler)
     # SimpleHTTPRequestHandler serves from cwd; we set cwd to repo root below
     t = threading.Thread(target=server.serve_forever, daemon=True)
     t.start()

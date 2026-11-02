@@ -4,15 +4,30 @@
 //! so the same logic is reusable from CLI, Tauri, or future mobile contexts.
 
 use anyhow::{anyhow, Context, Result};
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 
 use crate::frontmatter::{self, Frontmatter, Value};
 
 const NOTE_EXTS: &[&str] = &["md", "txt", "rtf"];
 
+/// True if `stem` is a bare filename that can't escape `notes_dir` (path traversal guard).
+/// Mirrors `_valid_stem` in watch.py: no separators, no `..`, no NUL byte.
+pub fn valid_stem(stem: &str) -> bool {
+    if stem.is_empty() || stem.contains("..") || stem.contains(['/', '\\', '\0']) {
+        return false;
+    }
+    // `Path::components()` splits a path into its parts.  A safe stem is exactly one
+    // ordinary name — this also rejects Windows drive prefixes like `C:evil`.
+    let mut parts = Path::new(stem).components();
+    matches!((parts.next(), parts.next()), (Some(Component::Normal(_)), None))
+}
+
 /// Locate a note by its stem (filename without extension).
 /// Searches the top level first, then recursively.
 pub fn find_note(notes_dir: &Path, stem: &str) -> Option<PathBuf> {
+    if !valid_stem(stem) {
+        return None;
+    }
     for ext in NOTE_EXTS {
         let p = notes_dir.join(format!("{stem}.{ext}"));
         if p.is_file() {
@@ -73,6 +88,9 @@ pub fn create_note(
     tags:      Vec<String>,
     body:      &str,
 ) -> Result<PathBuf> {
+    if !valid_stem(id) {
+        return Err(anyhow!("invalid note name: {id}"));
+    }
     if find_note(notes_dir, id).is_some() {
         return Err(anyhow!("note already exists: {id}"));
     }
@@ -181,5 +199,30 @@ mod tests {
         assert!(find_note(&notes, "doomed").is_some());
         delete_note(&notes, "doomed").unwrap();
         assert!(find_note(&notes, "doomed").is_none());
+    }
+
+    #[test]
+    fn rejects_path_traversal_stems() {
+        let tmp   = tempdir().unwrap();
+        let notes = tmp.path().join("notes");
+        std::fs::create_dir_all(&notes).unwrap();
+        // A file just outside notes/ that a traversal would reach.
+        std::fs::write(tmp.path().join("secret.md"), "outside").unwrap();
+
+        for bad in ["", "..", "../secret", "a/b", "a\\b", "nul\0byte"] {
+            assert!(!valid_stem(bad), "should reject {bad:?}");
+        }
+        // Drive-relative prefix: only a path component on Windows.
+        if cfg!(windows) {
+            assert!(!valid_stem("C:secret"));
+        }
+        assert!(valid_stem("my-note_1"));
+
+        assert!(find_note(&notes, "../secret").is_none());
+        assert!(read_note_raw(&notes, "../secret").is_err());
+        assert!(create_note(&notes, "../escaped", "ME", "S", vec![], "x").is_err());
+        assert!(!tmp.path().join("escaped.md").exists());
+        assert!(delete_note(&notes, "../secret").is_err());
+        assert!(tmp.path().join("secret.md").exists());
     }
 }

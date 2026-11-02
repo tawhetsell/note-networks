@@ -1040,6 +1040,16 @@ function dragEnd(event, d) {
   d.fx = null; d.fy = null;  // release fixed position; node drifts again
 }
 
+// ---- HTML ESCAPING ----
+// Note fields (id, tags, speaker…) come from user-editable files.  Before putting
+// them into innerHTML, replace the characters HTML treats as markup with entities,
+// so a note named `<img onerror=…>` shows as text instead of running as script.
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
 // ---- EDGE TOOLTIP ----
 const tip = document.getElementById("tooltip");
 
@@ -1047,8 +1057,8 @@ function showEdgeTip(event, d) {
   const terms    = (d.terms || []).join(", ") || "(no terms)";
   const isSim    = terms.includes("similar");
   const termLabel = isSim ? "Similarity" : "Shared terms";
-  tip.innerHTML = `<strong>${d.source.id} ↔ ${d.target.id}</strong><br>
-    ${termLabel}: ${terms}`;
+  tip.innerHTML = `<strong>${esc(d.source.id)} ↔ ${esc(d.target.id)}</strong><br>
+    ${termLabel}: ${esc(terms)}`;
   tip.style.display = "block";
   moveEdgeTip(event);
 }
@@ -1122,11 +1132,11 @@ function showPanel(d) {
   // Render frontmatter fields
   const tags = Array.isArray(d.tags) ? d.tags.join(", ") : (d.tags || "");
   panelMeta.innerHTML = `
-    <strong>${d.id}</strong><br>
-    Speaker: <strong>${d.speaker || "—"}</strong><br>
-    Source: ${d.source || d.episode || "—"}<br>
-    Words: ${d.word_count || "—"} &nbsp;·&nbsp; Connections: ${d.degree || 0}<br>
-    Tags: ${tags || "—"}
+    <strong>${esc(d.id)}</strong><br>
+    Speaker: <strong>${esc(d.speaker || "—")}</strong><br>
+    Source: ${esc(d.source || d.episode || "—")}<br>
+    Words: ${esc(d.word_count || "—")} &nbsp;·&nbsp; Connections: ${esc(d.degree || 0)}<br>
+    Tags: ${esc(tags || "—")}
   `;
 
   fetchNoteBody(d.id);
@@ -1233,8 +1243,10 @@ async function saveNote(event) {
       setTimeout(() => {
         exitWriteMode();
         panelBody.textContent = body;
+        // Function form of replace(): the returned text is used literally
+        // (a string replacement would interpret `$&`, `$1`… inside tags).
         panelMeta.innerHTML = panelMeta.innerHTML.replace(
-          /Tags: .*/, `Tags: ${tags.join(", ") || "—"}`
+          /Tags: .*/, () => `Tags: ${esc(tags.join(", ") || "—")}`
         );
       }, 800);
     } catch (err) {
