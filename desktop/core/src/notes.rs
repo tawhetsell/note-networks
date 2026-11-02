@@ -11,9 +11,14 @@ use crate::frontmatter::{self, Frontmatter, Value};
 const NOTE_EXTS: &[&str] = &["md", "txt", "rtf"];
 
 /// True if `stem` is a bare filename that can't escape `notes_dir` (path traversal guard).
-/// Mirrors `_valid_stem` in watch.py: no separators, no `..`, no NUL byte.
+/// Mirrors `_valid_stem` in watch.py: no separators, no `..`, no control characters
+/// (NUL, newline, …).
 pub fn valid_stem(stem: &str) -> bool {
-    if stem.is_empty() || stem.contains("..") || stem.contains(['/', '\\', '\0']) {
+    if stem.is_empty() || stem.contains("..") || stem.contains(['/', '\\']) {
+        return false;
+    }
+    // `char::is_control`: Unicode control characters (U+0000–001F, U+007F–009F).
+    if stem.chars().any(char::is_control) {
         return false;
     }
     // `Path::components()` splits a path into its parts.  A safe stem is exactly one
@@ -209,7 +214,7 @@ mod tests {
         // A file just outside notes/ that a traversal would reach.
         std::fs::write(tmp.path().join("secret.md"), "outside").unwrap();
 
-        for bad in ["", "..", "../secret", "a/b", "a\\b", "nul\0byte"] {
+        for bad in ["", "..", "../secret", "a/b", "a\\b", "nul\0byte", "new\nline", "back\x08space"] {
             assert!(!valid_stem(bad), "should reject {bad:?}");
         }
         // Drive-relative prefix: only a path component on Windows.

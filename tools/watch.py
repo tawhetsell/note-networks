@@ -29,9 +29,14 @@ BUILDER    = REPO / "tools" / "build_graph.py"
 PORT       = 8765
 DEBOUNCE   = 0.5   # seconds to wait after last change before rebuilding
 
+# Host headers we answer to.  A request naming any other host (e.g. evil.com that
+# re-pointed its DNS at 127.0.0.1 — "DNS rebinding") is refused, so a website can't
+# read notes by pretending to be this server.
+ALLOWED_HOSTS = {f"localhost:{PORT}", f"127.0.0.1:{PORT}"}
+
 # Origins allowed to POST/DELETE.  graph.html is served from this server, so its
 # requests are same-origin; anything else (another site open in the browser) is refused.
-ALLOWED_ORIGINS = {f"http://localhost:{PORT}", f"http://127.0.0.1:{PORT}"}
+ALLOWED_ORIGINS = {f"http://{h}" for h in ALLOWED_HOSTS}
 
 # CORPUS_DIR and NOTES_DIR are set in main() from the CLI corpus argument.
 # Module-level defaults keep type checkers and the file helpers happy at import time.
@@ -54,9 +59,14 @@ def _inside_notes_dir(p: Path) -> bool:
 def _valid_stem(stem: str) -> bool:
     """
     Reject note names that could escape NOTES_DIR (path traversal).
-    A stem is a bare filename: no separators, no '..', no NUL byte.
+    A stem is a bare filename: no separators, no '..', no control characters
+    (NUL, newline, … — Windows can't store them, and a newline would also break
+    the id: line in the frontmatter).
     """
-    if not stem or ".." in stem or any(c in stem for c in ("/", "\\", "\0")):
+    if not stem or ".." in stem or any(c in stem for c in ("/", "\\")):
+        return False
+    # ord(): a character's Unicode code point.  0–31 and 127–159 are the control characters.
+    if any(ord(c) < 32 or 127 <= ord(c) < 160 for c in stem):
         return False
     return _inside_notes_dir(NOTES_DIR / (stem + ".md"))
 
@@ -132,6 +142,16 @@ class AppHandler(SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):  # noqa: A002
         pass   # suppress per-request noise
+
+    def parse_request(self):
+        # parse_request(): http.server's hook that reads the request line + headers
+        # before any do_GET/do_POST runs — one place to vet every request.
+        if not super().parse_request():
+            return False
+        if self.headers.get("Host") not in ALLOWED_HOSTS:
+            self.send_error(403, "Host not allowed")
+            return False
+        return True
 
     def translate_path(self, path):
         # Redirect /data/* and /notes/* to CORPUS_DIR so graph.html paths work
@@ -214,7 +234,11 @@ class AppHandler(SimpleHTTPRequestHandler):
                 fm["tags"] = tags
             new_body = payload.get("body", "")
             fm["word_count"] = len(new_body.split())
-            p.write_text(_build_frontmatter(fm) + "\n" + new_body, encoding="utf-8")
+            try:
+                p.write_text(_build_frontmatter(fm) + "\n" + new_body, encoding="utf-8")
+            except OSError as e:
+                self._send_json(500, {"error": f"Could not save note: {e.strerror}"})
+                return
             self._send_json(200, {"ok": True})
             return
 
@@ -242,7 +266,12 @@ class AppHandler(SimpleHTTPRequestHandler):
                 "tags":       tags,
                 "word_count": len(body.split()),
             }
-            p.write_text(_build_frontmatter(fm) + "\n" + body, encoding="utf-8")
+            try:
+                p.write_text(_build_frontmatter(fm) + "\n" + body, encoding="utf-8")
+            except OSError as e:
+                # e.g. Windows refuses names containing < > : " | ? *
+                self._send_json(500, {"error": f"Could not save note: {e.strerror}"})
+                return
             self._send_json(201, {"ok": True, "id": note_id})
             return
 
@@ -260,7 +289,11 @@ class AppHandler(SimpleHTTPRequestHandler):
             if not p:
                 self._send_json(404, {"error": "Note not found"})
                 return
-            p.unlink()
+            try:
+                p.unlink()
+            except OSError as e:
+                self._send_json(500, {"error": f"Could not delete note: {e.strerror}"})
+                return
             self._send_json(200, {"ok": True})
             return
         self._send_json(404, {"error": "Unknown endpoint"})
