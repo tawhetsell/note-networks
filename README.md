@@ -219,7 +219,7 @@ note-networks/
 - `watchdog` — see `requirements.txt`
 - A modern browser
 
-No Node.js, no build step, no database. `d3.js` loads from CDN on first open; subsequent loads use the browser cache.
+No Node.js, no build step, no database, no network access needed. `d3.js` (v7.9.0) is bundled in `viz/vendor/` rather than loaded from a CDN.
 
 | Platform | Command |
 |---|---|
