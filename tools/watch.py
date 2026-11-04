@@ -6,13 +6,15 @@ can load ../data/graph.json and ../notes/*.md via fetch() without
 hitting browser file:// cross-origin restrictions.
 
 Usage: python tools/watch.py
-Open:  http://localhost:8765/viz/graph.html
+Opens the browser for you.  To reopen later, use the link it prints
+(it carries this session's access token).
 
-Deps: watchdog (pip install watchdog)
+Deps: watchdog (pip install -r requirements.txt)
 """
 
 import json as _json
 import re as _re
+import secrets
 import subprocess
 import sys
 import webbrowser
@@ -37,6 +39,13 @@ ALLOWED_HOSTS = {f"localhost:{PORT}", f"127.0.0.1:{PORT}"}
 # Origins allowed to POST/DELETE.  graph.html is served from this server, so its
 # requests are same-origin; anything else (another site open in the browser) is refused.
 ALLOWED_ORIGINS = {f"http://{h}" for h in ALLOWED_HOSTS}
+
+# Per-run access token.  The browser is opened at /login?token=…, which stores it
+# in a cookie; every other request must carry that cookie.  This keeps other user
+# accounts on the same machine (who can reach 127.0.0.1 but not your files) out.
+# secrets.token_urlsafe(): cryptographically random, URL-safe text.
+TOKEN       = secrets.token_urlsafe(32)
+COOKIE_NAME = f"nn_session_{PORT}"
 
 # CORPUS_DIR and NOTES_DIR are set in main() from the CLI corpus argument.
 # Module-level defaults keep type checkers and the file helpers happy at import time.
@@ -151,7 +160,42 @@ class AppHandler(SimpleHTTPRequestHandler):
         if self.headers.get("Host") not in ALLOWED_HOSTS:
             self.send_error(403, "Host not allowed")
             return False
+        if self.path.startswith("/login"):
+            self._login()
+            return False          # _login() already sent the response
+        if not self._has_session():
+            self.send_error(401, "Not signed in: open the link printed by watch.py")
+            return False
         return True
+
+    def _login(self) -> None:
+        """Swap a valid ?token= for a session cookie, then redirect to the viewer."""
+        import urllib.parse
+        query = urllib.parse.urlsplit(self.path).query
+        token = urllib.parse.parse_qs(query).get("token", [""])[0]
+        # secrets.compare_digest(): constant-time compare, so response timing
+        # can't leak how many leading characters of a guess were right.
+        if not secrets.compare_digest(token, TOKEN):
+            self.send_error(403, "Invalid token")
+            return
+        self.send_response(303)   # 303 See Other: follow-up request is a plain GET
+        # HttpOnly: page scripts can't read the cookie.  SameSite=Strict: the browser
+        # won't attach it to requests that other websites trigger.
+        self.send_header("Set-Cookie",
+                         f"{COOKIE_NAME}={TOKEN}; Path=/; HttpOnly; SameSite=Strict")
+        # Redirecting drops the token from the address bar and browser history.
+        self.send_header("Location", "/viz/graph.html")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    def _has_session(self) -> bool:
+        from http.cookies import SimpleCookie, CookieError   # parses the "Cookie:" header
+        try:
+            jar = SimpleCookie(self.headers.get("Cookie", ""))
+        except CookieError:
+            return False
+        sent = jar[COOKIE_NAME].value if COOKIE_NAME in jar else ""
+        return secrets.compare_digest(sent, TOKEN)
 
     def translate_path(self, path):
         # Redirect /data/* and /notes/* to CORPUS_DIR so graph.html paths work
@@ -386,7 +430,9 @@ def main():
 
     print(f"Corpus:  {CORPUS_DIR}")
     print(f"Watching {NOTES_DIR} for changes...")
-    print(f"Serving  http://localhost:{PORT}/viz/graph.html")
+    login_url = f"http://localhost:{PORT}/login?token={TOKEN}"
+    print(f"Serving  {login_url}")
+    print(f"         (link includes this session's access token; it changes on every restart)")
     print(f"Press Ctrl-C to stop.\n")
 
     # Run an initial build so the page loads immediately
@@ -398,8 +444,7 @@ def main():
     print("OK" if r.returncode == 0 else f"FAILED\n{r.stderr}")
 
     # webbrowser.open: launches the system default browser
-    url = f"http://localhost:{PORT}/viz/graph.html"
-    webbrowser.open(url)
+    webbrowser.open(login_url)
 
     start_server()
 

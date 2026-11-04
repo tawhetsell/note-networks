@@ -1,3 +1,5 @@
-requests
-beautifulsoup4
-watchdog
+# Exact versions (==) so `pip install -r requirements.txt` never silently picks up a
+# newer — possibly compromised — release.  (Stronger still would be per-file hashes
+# via `--hash=sha256:…`; PyPI forbids replacing a release's files but not adding new ones.)
+# To upgrade: check the release notes, bump the number, re-test tools/watch.py.
+watchdog==6.0.0

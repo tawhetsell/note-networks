@@ -49,7 +49,7 @@ pip install -r requirements.txt
 python tools/watch.py
 ```
 
-Open **http://localhost:8765/viz/graph.html**.
+Your browser opens automatically. If you close the tab, reopen it with the link `watch.py` prints (`http://localhost:8765/login?token=…`). The token is a per-session password that changes on every restart, so other user accounts on the same machine can't reach your notes.
 
 This launches the Aurelius demo corpus. To start your own network, see [Multiple networks](#multiple-networks) below.
 

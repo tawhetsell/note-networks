@@ -501,7 +501,7 @@
     <div id="file-warning">
       ⚠ <strong>file:// detected.</strong> Click a node to read its .md body
       requires a local server.<br>
-      Run: <code>python -m http.server 8765</code> from repo root, then open
+      Run: <code>python -m http.server 8765 --bind 127.0.0.1</code> from repo root, then open
       <a href="http://localhost:8765/viz/graph.html">localhost:8765/viz/graph.html</a>.
     </div>
   </div>
@@ -1771,8 +1771,9 @@ window.addEventListener("resize", () => {
   (browsers block cross-origin file:// fetches by default).
 
   Fix — one command from repo root:
-    python -m http.server 8765
-  Then open:
+    python -m http.server 8765 --bind 127.0.0.1
+  (--bind 127.0.0.1 = this machine only; without it the server is visible to
+  your whole network.)  Then open:
     http://localhost:8765/viz/graph.html
 
   Or use the built-in watcher (which starts the server automatically):
